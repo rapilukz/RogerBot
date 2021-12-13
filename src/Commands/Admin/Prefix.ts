@@ -21,7 +21,7 @@ export const command: Command = {
 
     try {
       const guildId = message.guildId;
-
+      
       await PrefixSchema.findOneAndUpdate({ _id: guildId }, { _id: guildId, prefix: NewPrefix }, { upsert: true });
       PrefixEmbed(client, message, NewPrefix);
     } catch (error) {

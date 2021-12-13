@@ -10,11 +10,11 @@ export const event: Event = {
 
         //Bot status system
         const arrayOfStatus: string[] = [
-        `Arruinando ${client.guilds.cache.size} Servers`,
-        `Capitão Roger`,
+        `Ruining ${client.guilds.cache.size} Servers`,
+        `Captain Roger`,
         `Prefix- ${prefix}`,
-        `Roger Socorro`,
-        `Não sou Rapper sou o Roger`,
+        `Roger Help`,
+        `Im not a bot im Roger`,
       ];
       const arrayOfTypes: any = ['WATCHING','LISTENING','LISTENING','PLAYING', 'PLAYING'];
       let i = 0

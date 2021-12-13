@@ -5,7 +5,7 @@ import RoastEmbed from './Embeds/roast';
 
 export const isNumber = (input: any): boolean => {
   return !isNaN(input);
-}
+};
 
 export const GetInsult = async () => {
   const response = await fetch('https://evilinsult.com/generate_insult.php?lang=en&type=json');
@@ -22,4 +22,15 @@ export const roast = async (user: User, client: Client, message: Message) => {
       msg.delete();
     }, Delay);
   });
+};
+
+export const GetTextChannels = async (message: Message) => {
+  const Channels = await message.guild.channels.fetch();
+  const TextChannels = Channels.filter((channel) => channel.type === 'GUILD_TEXT').map((channel) => {
+    return {
+      name: channel.name,
+      category: channel.parent?.name,
+    };
+  });
+  return TextChannels;
 };

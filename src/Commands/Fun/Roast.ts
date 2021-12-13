@@ -9,7 +9,7 @@ export const command: Command = {
   permissions: [SEND_MESSAGES],
   category: 'Fun',
   description: 'roastes a user or yourself',
-  run: async (client, message, args) => {
+  run: async (client, message, args,) => {
     if (args[0]) {
       const mentionedMember = message.mentions.users.first();
       if (!mentionedMember) return message.channel.send('Não encontrei esse ser humano');
