@@ -1,11 +1,10 @@
-import { Channel, CommandInteraction, Message, User } from 'discord.js';
+import { CacheType, Channel, CommandInteraction, Message, MessageOptions, SelectMenuInteraction, User } from 'discord.js';
 import Client from '../Client';
 import fetch from 'node-fetch';
 import RoastEmbed from './Embeds/Random/roast';
 import GuildSchema from '../Utils/Schemas/Guild';
 import { prefix as GlobalPrefix } from '../config.json';
-import { ChannelType } from 'discord-api-types';
-import { ChannelTypes } from 'discord.js/typings/enums';
+
 
 export const isNumber = (input: any): boolean => {
   return !isNaN(input);
@@ -51,3 +50,26 @@ export const GuildPrefix = async (message: Message) => {
   return prefix;
 }
 
+export const SendoToDB = async (CollectionField: string, value: any, interaction: SelectMenuInteraction<CacheType> | Message) => {
+  try{
+    await GuildSchema.findOneAndUpdate(
+      { _id: interaction.guildId },
+      { $set: { [CollectionField]: value } },
+      { upsert: true },
+      )
+  }catch{
+    interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+  }
+}
+
+export const GetFromDB = async (CollectionField: string, interaction: SelectMenuInteraction<CacheType> | Message) => {
+  try{
+    const data = await GuildSchema.findOne({ _id: interaction.guildId });
+
+    if(!data[CollectionField]) return 'None';
+
+    return data[CollectionField];
+  }catch{
+    interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+  }
+}

@@ -1,8 +1,7 @@
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, Interaction } from 'discord.js';
 import { Event } from '../Interfaces';
-import { WelcomeRow } from '../SlashCommands/Admin/config';
+import { HandleConfigOptions, HandleGoodbyeChannel, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
 import { GetChannels } from '../Utils/Functions';
-
 
 export const event: Event = {
   name: 'interactionCreate',
@@ -21,25 +20,20 @@ export const event: Event = {
     }
 
     const options = await GetChannels(interaction, 'GUILD_TEXT');
-
-
     if (interaction.isSelectMenu()) {
-
-       if(interaction.customId === 'ConfigOptions'){
-
-          await interaction.values.forEach(async value => {
-             
-              switch(value){
-                  case 'Welcome':
-                    await interaction.reply({ content: 'Welcome Channel Options', components:[WelcomeRow(options)],ephemeral: true });
-                    break;
-                  default:
-                    await interaction.reply({ content: 'Something went wrong', ephemeral: true });
-                    break;
-              }     
-                     
-          })
-       }
+      switch (interaction.customId) {
+        case 'ConfigOptions':
+          await HandleConfigOptions(interaction, options);
+          break;
+        case 'WelcomeChannel':
+          await HandleWelcomeChannel(interaction, options);
+          break;
+        case 'GoodbyeChannel':
+          await HandleGoodbyeChannel(interaction, options);
+          break;
+        default:
+          break;
+      }
     }
   },
 };

@@ -8,8 +8,16 @@ const RequiredString = {
 const GuildSchema = new Schema({
     //Guild ID
     _id: RequiredString,
-    Name: RequiredString,
-    prefix: RequiredString,
+    Name: String,
+    prefix: String,
+   
+    WelcomeChannelID: Number,
+    WelcomeChannelName: String,
+   
+    GoodbyeChannelID: Number,
+    GoodbyeChannelName: String,
+    
+    ModerationChannelID: Number,
 })
 
 export default model('Guilds', GuildSchema);
