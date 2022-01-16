@@ -1,5 +1,5 @@
 import ms from 'ms';
-import Client from '../../Client';
+import Client from '../../../Client';
 import { Message } from 'discord.js';
 
 export function Timer(client: Client, message: Message, time: ms, reason: string) {

@@ -1,7 +1,7 @@
 import { Command } from '../../Interfaces';
 import { ADMINISTRATOR } from '../../Utils/Permissions';
-import PrefixSchema from '../../Utils/Schemas/Prefix';
-import PrefixEmbed from '../../Utils/Embeds/Prefix';
+import GuildSchema from '../../Utils/Schemas/Guild';
+import PrefixEmbed from '../../Utils/Embeds/Random/Prefix';
 import mongosse from 'mongoose';
 
 mongosse.set('useFindAndModify', false);
@@ -21,8 +21,13 @@ export const command: Command = {
 
     try {
       const guildId = message.guildId;
-      
-      await PrefixSchema.findOneAndUpdate({ _id: guildId }, { _id: guildId, prefix: NewPrefix }, { upsert: true });
+      const guildName = message.guild.name;
+
+      await GuildSchema.findOneAndUpdate(
+        { _id: guildId },
+        { _id: guildId, Name: guildName, prefix: NewPrefix },
+        { upsert: true }
+      );
       PrefixEmbed(client, message, NewPrefix);
     } catch (error) {
       message.channel.send(`An error occured while trying to change the prefix`);

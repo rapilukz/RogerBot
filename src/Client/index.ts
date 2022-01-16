@@ -7,8 +7,11 @@ import ConfigJson from '../config.json';
 import dotenv from 'dotenv';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
+import ascii from 'ascii-table'
 
 dotenv.config();
+let table = new ascii("Commands");
+table.setHeading("Command", "Loaded");
 
 class ExtendedClient extends Client {
   public commands: Collection<string, Command> = new Collection();
@@ -46,20 +49,26 @@ class ExtendedClient extends Client {
     
       for (const file of commands) {
         const { command } = require(`${commandPath}/${dir}/${file}`);
-        this.commands.set(command.name, command);
-        this.categories.add(command.category);
+        if(command.name){
+          this.commands.set(command.name, command);
+          this.categories.add(command.category);
+          table.addRow(file, '✅');
+        }else{
+          table.addRow(file, '❌');
+          continue;
+        }
         if (command?.aliases.length !== 0) {
           command.aliases.forEach((alias: any) => {
             this.aliases.set(alias, command);
           });
         }
       }
+      
     });
   }
   
   private async SlashComamndHandler() {
     const GuildID = '700386156734578738';
-    
     
     const SlashcommandPath = path.join(__dirname, '..', 'SlashCommands');
     readdirSync(SlashcommandPath).forEach((dir) => {
@@ -102,6 +111,8 @@ class ExtendedClient extends Client {
     this.login(process.env.TOKEN); // Login to Discord
     this.OpenConnection(); // Open connection to MongoDB
     this.InitHandlers(); // Initialize Command and Event handlers
+
+    console.log(table.toString());
   }
 }
 

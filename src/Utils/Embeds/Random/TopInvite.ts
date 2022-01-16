@@ -1,4 +1,4 @@
-import Client from '../../Client';
+import Client from '../../../Client';
 import { Message } from 'discord.js'; 
 
 export default function Leaderboard(client: Client, message: Message, LeaderboardTemplate: string) {

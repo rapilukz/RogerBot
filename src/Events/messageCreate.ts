@@ -2,17 +2,15 @@ import { Message, Collection } from 'discord.js';
 import { Event } from '../Interfaces';
 import { prefix as GlobalPrefix } from '../config.json';
 import NoCommand from '../Utils/Embeds/Command/NoCommand';
-import PrefixSchema from '../Utils/Schemas/Prefix';
+import { GuildPrefix } from '../Utils/Functions';
 
 export const event: Event = {
   name: 'messageCreate',
   run: async (client, message: Message) => {
     // Custom Prefix check
     if (message.channel.type === 'DM') return;
-    const GuildID = message.guild.id;
-    const data = await PrefixSchema.findOne({ _id: GuildID });
-    if (!data) await PrefixSchema.create({ _id: GuildID, prefix: GlobalPrefix });
-    let prefix = data.prefix ? data.prefix : GlobalPrefix;
+
+    const prefix = await GuildPrefix(message);
 
     // Checks if the message starts with the Prefix
     if (!message.content.toLowerCase().startsWith(prefix + ' ') || message.author.bot || !message.guild) return;

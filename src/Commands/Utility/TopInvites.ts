@@ -1,7 +1,6 @@
-import { EmojiResolvable, TextChannel } from 'discord.js';
 import { Command, Leaderboard } from '../../Interfaces';
 import { SEND_MESSAGES, CREATE_INSTANT_INVITE } from '../../Utils/Permissions';
-import LeaderboardEmbed from '../../Utils/Embeds/TopInvite';
+import LeaderboardEmbed from '../../Utils/Embeds/Random/TopInvite';
 
 export const command: Command = {
   name: 'topinvites',

@@ -18,4 +18,4 @@ myIntens.add(
   Intents.FLAGS.GUILD_MESSAGE_TYPING,
 );
 
-new Client({intents : myIntens}).init();
+new Client({intents: myIntens }).init();

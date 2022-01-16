@@ -1,6 +1,7 @@
 import { SlashCommand } from '../../Interfaces';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import * as Perms from '../../Utils/Permissions'; 
+import { CommandInteraction } from 'discord.js';
 
 export const command: SlashCommand = {
     category: 'Util',
@@ -8,7 +9,8 @@ export const command: SlashCommand = {
     .setName('ping')
     .setDescription('Ping the bot')
     .setDefaultPermission(true),
-    run: async (interaction) => {
+    run: async (interaction: CommandInteraction) => {
         interaction.reply('Pong!');
+        
     }
 }
