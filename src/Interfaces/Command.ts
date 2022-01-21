@@ -1,5 +1,5 @@
 import Client from '../Client';
-import { Message } from 'discord.js';
+import { Message, PermissionResolvable } from 'discord.js';
 
 interface Run {
   (client: Client, message: Message, args: any[]);
@@ -10,7 +10,7 @@ export interface Command {
   aliases?: string[];
   category: string;
   cooldown: number;
-  permissions?: any;
+  permissions?: PermissionResolvable[];
   description: string;
   run: Run;
 }

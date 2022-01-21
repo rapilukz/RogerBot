@@ -1,5 +1,6 @@
 import { SlashCommand } from '../../Interfaces';
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { ADMINISTRATOR } from '../../Utils/Permissions';
 import {
   CacheType,
   CommandInteraction,
@@ -12,10 +13,10 @@ import { GetChannels, GetFromDB, GetLabel, SendoToDB } from '../../Utils/Functio
 
 export const command: SlashCommand = {
   category: 'Admin',
+  userPermissions: [ADMINISTRATOR],
   data: new SlashCommandBuilder()
     .setName('config')
     .setDescription('Configure the bot')
-    .setDefaultPermission(true)
     .addStringOption((option) =>
       option
         .setName('options')
@@ -27,7 +28,6 @@ export const command: SlashCommand = {
         ])
     ),
   run: async (interaction: CommandInteraction) => {
-    
     const options = await GetChannels(interaction, 'GUILD_TEXT');
     if (interaction.isAutocomplete) {
       interaction.options.data.forEach((option) => {

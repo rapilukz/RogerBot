@@ -1,4 +1,13 @@
-import { Client, Collection, MessageEmbedOptions, MessageEmbed, Message, CommandInteraction } from 'discord.js';
+import {
+  Client,
+  Collection,
+  MessageEmbedOptions,
+  MessageEmbed,
+  Message,
+  CommandInteraction,
+  ApplicationCommandDataResolvable,
+  UserApplicationCommandData,
+} from 'discord.js';
 import { connect } from 'mongoose';
 import path from 'path';
 import { readdirSync } from 'fs';
@@ -16,7 +25,7 @@ table.setHeading('Command', 'Loaded');
 class ExtendedClient extends Client {
   public commands: Collection<string, Command> = new Collection();
   public SlashCommands: Collection<string, SlashCommand> = new Collection();
-  public SlashCommandsArray: SlashCommand[] = [];
+  public SlashCommandsArray: UserApplicationCommandData[] = [];
   public events: Collection<string, Command> = new Collection();
   public cooldowns: Collection<string, Collection<string, number>> = new Collection();
   public categories: Set<string> = new Set();
@@ -79,6 +88,7 @@ class ExtendedClient extends Client {
         this.SlashCommandsArray.push(command.data.toJSON());
       }
     });
+
 
     const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
     try {

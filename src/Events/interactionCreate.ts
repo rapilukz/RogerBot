@@ -8,8 +8,14 @@ export const event: Event = {
   run: async (client, interaction: CommandInteraction) => {
     if (interaction.isCommand()) {
       const command = client.SlashCommands.get(interaction.commandName);
-
       if (!command) return;
+
+      // Basic Permissions Check
+      if (!interaction.memberPermissions.has(command.userPermissions))
+        return interaction.reply({
+          content: `You don't have the required permissions to use this command!`,
+          ephemeral: true,
+        });
 
       try {
         await command.run(interaction);
