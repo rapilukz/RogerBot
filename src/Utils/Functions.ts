@@ -44,9 +44,12 @@ export const GuildPrefix = async (message: Message) => {
 
   const data = await GuildSchema.findOne({ _id: GuildID });
 
-  if (!data) await GuildSchema.create({ _id: GuildID, Name: GuildName , prefix: GlobalPrefix });
-  let prefix = data.prefix ? data.prefix : GlobalPrefix;
+  if (!data) {
+    await GuildSchema.create({ _id: GuildID, Name: GuildName , prefix: GlobalPrefix });
+    return GlobalPrefix;
+  }
 
+  const prefix = data.prefix;
   return prefix;
 }
 
