@@ -1,4 +1,4 @@
-import { CacheType, Channel, CommandInteraction, Message, MessageOptions, SelectMenuInteraction, User } from 'discord.js';
+import { CacheType, Channel, CommandInteraction, Message, MessageOptions, MessageSelectOptionData, SelectMenuInteraction, User } from 'discord.js';
 import Client from '../Client';
 import fetch from 'node-fetch';
 import RoastEmbed from './Embeds/Random/roast';
@@ -50,7 +50,7 @@ export const GuildPrefix = async (message: Message) => {
   return prefix;
 }
 
-export const SendoToDB = async (CollectionField: string, value: any, interaction: SelectMenuInteraction<CacheType> | Message) => {
+export const SendoToDB = async (CollectionField: string, value: any, interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>) => {
   try{
     await GuildSchema.findOneAndUpdate(
       { _id: interaction.guildId },
@@ -62,7 +62,7 @@ export const SendoToDB = async (CollectionField: string, value: any, interaction
   }
 }
 
-export const GetFromDB = async (CollectionField: string, interaction: SelectMenuInteraction<CacheType> | Message) => {
+export const GetFromDB = async (CollectionField: string, interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>) => {
   try{
     const data = await GuildSchema.findOne({ _id: interaction.guildId });
 
@@ -73,3 +73,13 @@ export const GetFromDB = async (CollectionField: string, interaction: SelectMenu
     interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
   }
 }
+
+export const GetLabel = (options: MessageSelectOptionData[] | MessageSelectOptionData[][], value: string) => {
+  let label = '';
+  options.forEach((option) => {
+    if (option.value === value) {
+      label = option.label;
+    }
+  });
+  return label;
+};

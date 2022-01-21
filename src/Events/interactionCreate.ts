@@ -1,6 +1,6 @@
-import { CommandInteraction, Interaction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { Event } from '../Interfaces';
-import { HandleConfigOptions, HandleGoodbyeChannel, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
+import { HandleGoodbyeChannel, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
 import { GetChannels } from '../Utils/Functions';
 
 export const event: Event = {
@@ -22,9 +22,6 @@ export const event: Event = {
     const options = await GetChannels(interaction, 'GUILD_TEXT');
     if (interaction.isSelectMenu()) {
       switch (interaction.customId) {
-        case 'ConfigOptions':
-          await HandleConfigOptions(interaction, options);
-          break;
         case 'WelcomeChannel':
           await HandleWelcomeChannel(interaction, options);
           break;

@@ -16,7 +16,7 @@ table.setHeading('Command', 'Loaded');
 class ExtendedClient extends Client {
   public commands: Collection<string, Command> = new Collection();
   public SlashCommands: Collection<string, SlashCommand> = new Collection();
-  private SlashCommandsArray: SlashCommand[] = [];
+  public SlashCommandsArray: SlashCommand[] = [];
   public events: Collection<string, Command> = new Collection();
   public cooldowns: Collection<string, Collection<string, number>> = new Collection();
   public categories: Set<string> = new Set();
