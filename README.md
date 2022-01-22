@@ -4,7 +4,7 @@
   •
   <a href="#installation">Installation</a>
   •
-  <a href="#Features">License</a>
+  <a href="#Features">Features</a>
   •
   <a href="#Contributing">Contributing</a>
   •
