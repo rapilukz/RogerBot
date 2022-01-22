@@ -13,7 +13,7 @@
 **RogerBot** was created with <code><b>Discord.js</b></code> and <code><b>Typescript</b></code> and is still in Development!  
 This project started as a fun way to learn **Typescript** during my freetime and is something I'm really passionate about.   
 **Roger** is an open source discord bot that is constantly growing. His codebase comes with a framework that is easy to implement    new **Legacy** and **Slash** **Commands** with an already built in permission sytem for both types of commands and a cooldown system 
-(currently on implemented for legacy commands)  
+(currently implemented only for legacy commands)  
 
 You can invite him to your Discord Server via [this](https://discord.com/api/oauth2/authorize?client_id=863861449083453440&permissions=8&scope=bot) link!  
 If you liked this repository, feel free to leave a star ⭐ to help promote Roger!!
