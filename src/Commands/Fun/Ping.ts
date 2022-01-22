@@ -1,6 +1,6 @@
 import { Command } from '../../Interfaces'; 
 import { SEND_MESSAGES } from '../../Utils/Permissions' ;
-import { GetChannels } from '../../Utils/Functions';
+
 
 
 export const command: Command = {
@@ -11,7 +11,7 @@ export const command: Command = {
     category: 'Fun',
     description: 'Test command',
     run: async (client, message, args) => {
-        message.channel.send('Pong!');
+        
     }
 }
 

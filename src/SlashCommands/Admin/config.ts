@@ -9,7 +9,8 @@ import {
   MessageSelectOptionData,
   SelectMenuInteraction,
 } from 'discord.js';
-import { GetChannels, GetFromDB, GetLabel, SendoToDB } from '../../Utils/Functions';
+import { GetChannels, GetFromDBInteraction, GetLabel, GetRoles, SendoToDB } from '../../Utils/Functions';
+import { DBFields } from '../../config.json';
 
 export const command: SlashCommand = {
   category: 'Admin',
@@ -25,18 +26,22 @@ export const command: SlashCommand = {
         .addChoices([
           ['👋 Welcome Channel 👋', 'Welcome'],
           ['😠 Goodbye Channel 😠', 'Goodbye'],
+          ['📜 Default Role 📜', 'Role'],
         ])
     ),
   run: async (interaction: CommandInteraction) => {
-    const options = await GetChannels(interaction, 'GUILD_TEXT');
+    const Channels = await GetChannels(interaction, 'GUILD_TEXT');
     if (interaction.isAutocomplete) {
       interaction.options.data.forEach((option) => {
         switch (option.value) {
           case 'Welcome':
-            SendWelcomeRow(interaction, options);
+            SendWelcomeRow(interaction, Channels);
             break;
           case 'Goodbye':
-            SendGoodbyeRow(interaction, options);
+            SendGoodbyeRow(interaction, Channels);
+            break;
+          case 'Role':
+            SendRoleRow(interaction);
             break;
           default:
             interaction.reply({ content: `Something went wrong!` });
@@ -46,13 +51,37 @@ export const command: SlashCommand = {
   },
 };
 
-const SendWelcomeRow = async (interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>, options: any[]) => {
+const SendRoleRow = async (interaction: CommandInteraction) => {
+  const ListOfRoles = await GetRoles(interaction);
+  const row = new MessageActionRow().addComponents(
+    new MessageSelectMenu().setCustomId('Role').setPlaceholder('Available Roles 📚').addOptions(ListOfRoles)
+  );
+
+  const CurrentRole = await GetFromDBInteraction(DBFields.DefaultRoleName, interaction);
+  await interaction.reply({
+    content: 'dsada',
+    components: [row],
+    embeds: [
+      {
+        title: 'Default Role',
+        description: `Default Role: \`${CurrentRole}\``,
+        color: 'RANDOM',
+      },
+    ],
+    ephemeral: true,
+  });
+};
+
+const SendWelcomeRow = async (
+  interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
+  options: any[]
+) => {
   //Current Welcome Channel
   const row = new MessageActionRow().addComponents(
     new MessageSelectMenu().setCustomId('WelcomeChannel').setPlaceholder('Available Channels 📚').addOptions(options)
   );
 
-  const CurrentChannel = await GetFromDB('WelcomeChannelName', interaction);
+  const CurrentChannel = await GetFromDBInteraction(DBFields.WelcomeChannelName, interaction);
 
   await interaction.reply({
     content: `Set the Server's Welcome Channel 🎉`,
@@ -68,12 +97,15 @@ const SendWelcomeRow = async (interaction: SelectMenuInteraction<CacheType> | Co
   });
 };
 
-const SendGoodbyeRow = async (interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>, options: any[]) => {
+const SendGoodbyeRow = async (
+  interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
+  options: any[]
+) => {
   const row = new MessageActionRow().addComponents(
     new MessageSelectMenu().setCustomId('GoodbyeChannel').setPlaceholder('Available Channels 📚').addOptions(options)
   );
 
-  const CurrentChannel = await GetFromDB('GoodbyeChannelName', interaction);
+  const CurrentChannel = await GetFromDBInteraction(DBFields.GoodbyeChannelName, interaction);
 
   await interaction.reply({
     content: `Set the Server's Goodbye Channel 😢`,
@@ -89,17 +121,15 @@ const SendGoodbyeRow = async (interaction: SelectMenuInteraction<CacheType> | Co
   });
 };
 
-export const HandleWelcomeChannel = async (
-  interaction: SelectMenuInteraction<CacheType>,
-  options: MessageSelectOptionData[] | MessageSelectOptionData[][]
-) => {
+export const HandleWelcomeChannel = async (interaction: SelectMenuInteraction<CacheType>) => {
+  const options = await GetChannels(interaction, 'GUILD_TEXT');
   interaction.values.forEach(async (value) => {
+    //Value is the id of the channel
     const Label = GetLabel(options, value);
-    //Send the ID and the Channel Name to the DB
-
-    SendoToDB('WelcomeChannelID', value, interaction);
-    SendoToDB('WelcomeChannelName', Label, interaction);
-
+    
+    SendoToDB(DBFields.WelcomeChannelID, value, interaction);
+    SendoToDB(DBFields.WelcomeChannelName, Label, interaction); 
+    
     interaction.reply({
       embeds: [
         {
@@ -118,16 +148,40 @@ export const HandleWelcomeChannel = async (
   });
 };
 
-export const HandleGoodbyeChannel = async (
-  interaction: SelectMenuInteraction<CacheType>,
-  options: MessageSelectOptionData[] | MessageSelectOptionData[][]
-) => {
+export const HandleDefaultRole = async (interaction: SelectMenuInteraction<CacheType>) => {
+  const options = await GetRoles(interaction);
+  interaction.values.forEach(async (value) => {
+      const Label = GetLabel(options, value);
+
+      SendoToDB(DBFields.DefaultRoleID, value, interaction);
+      SendoToDB(DBFields.DefaultRoleName, Label, interaction);
+
+      interaction.reply({
+        embeds: [
+          {
+            title: 'Default Role',
+            description: `Default Role set to \`${Label}\``,
+            color: 'GREEN',
+            timestamp: new Date(),
+            footer: {
+              text: `Set By ${interaction.user.username}#${interaction.user.discriminator}`,
+              icon_url: interaction.user.avatarURL(),
+            },
+          },
+        ],
+        ephemeral: true,
+      });
+    });
+};
+
+export const HandleGoodbyeChannel = async (interaction: SelectMenuInteraction<CacheType>) => {
+  const options = await GetChannels(interaction, 'GUILD_TEXT');
   interaction.values.forEach(async (value) => {
     const Label = GetLabel(options, value);
     //Send the ID and the Channel Name to the DB
-
-    SendoToDB('GoodbyeChannelID', value, interaction);
-    SendoToDB('GoodbyeChannelName', Label, interaction);
+    
+    SendoToDB(DBFields.GoodbyeChannelID, value, interaction);
+    SendoToDB(DBFields.GoodbyeChannelName, Label, interaction);
 
     interaction.reply({
       embeds: [
@@ -146,4 +200,3 @@ export const HandleGoodbyeChannel = async (
     });
   });
 };
-

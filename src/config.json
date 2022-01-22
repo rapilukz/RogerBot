@@ -1,3 +1,11 @@
 {
-  "prefix": "roger"
+  "prefix": "roger",
+  "DBFields": {
+    "WelcomeChannelName": "WelcomeChannelName",
+    "WelcomeChannelID": "WelcomeChannelID",
+    "GoodbyeChannelName": "GoodbyeChannelName",
+    "GoodbyeChannelID": "GoodbyeChannelID",
+    "DefaultRoleName": "DefaultRoleName",
+    "DefaultRoleID": "DefaultRoleID"
+  }
 }

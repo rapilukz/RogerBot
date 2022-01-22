@@ -11,11 +11,14 @@ const GuildSchema = new Schema({
     Name: String,
     prefix: String,
    
-    WelcomeChannelID: Number,
+    WelcomeChannelID: String,
     WelcomeChannelName: String,
    
-    GoodbyeChannelID: Number,
+    GoodbyeChannelID: String,
     GoodbyeChannelName: String,
+
+    DefaultRoleName: String,
+    DefaultRoleID: String,
 })
 
 export default model('Guilds', GuildSchema);
