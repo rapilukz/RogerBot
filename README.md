@@ -4,27 +4,42 @@
   •
   <a href="#installation">Installation</a>
   •
+  <a href="#Features">License</a>
+  •
   <a href="#Contributing">Contributing</a>
   •
   <a href="#license">License</a>
 </p>
 
 ## <p id="about"> ✍️About </p>
-**RogerBot** was created with <code><b>Discord.js</b></code> and <code><b>Typescript</b></code> and is still in Development!  
+**RogerBot** was created with <code><b>Discord.js</b></code> and <code><b>Typescript</b></code> and is still in early Development!  
 This project started as a fun way to learn **Typescript** during my freetime and is something I'm really passionate about.   
-**Roger** is an open source discord bot that is constantly growing. His codebase comes with a framework that is easy to implement    new **Legacy** and **Slash** **Commands** with an already built in permission sytem for both types of commands and a cooldown system 
+**Roger** is an open source discord bot that is constantly growing. His codebase comes with a framework that is easy to implement new **Legacy** and **Slash** **Commands** with an already built in permission sytem for both types of commands and a cooldown system 
 (currently implemented only for legacy commands)  
 
 You can invite him to your Discord Server via [this](https://discord.com/api/oauth2/authorize?client_id=863861449083453440&permissions=8&scope=bot) link!  
 If you liked this repository, feel free to leave a star ⭐ to help promote Roger!!
 
+## <p id="features"> 📚 Features </p>
+**Roger** is still in early development stages so it doesn't have that many commands compared to other bots  
+The bot currently has 4 categories of commands for both Slash and Legacy: 
+- Admin
+- Moderation
+- Fun
+- Utility  
+  
+It as an easy to configure system with the <code>**/config**</code>. It uses Discord's dropdown menus to help you set
+channels for different functions of the bot, like **Moderation**, **Welcome** and **Goodbye** channels for your server.
 ## <p id="installation"> ⚙️ Installation </p>
 
 
 To Run this bot you will need the follwing things:
 - [Node.js](https://nodejs.org/en/) <b>v16+</b>
 - [Discord.js](https://discord.js.org/#/) <b>v13+</b>
-- [MongoDB](https://www.mongodb.com/)
+- [MongoDB](https://www.mongodb.com/)  
+
+**Important**: Make sure that your bot has the **applications.commands** application scope enabled, which can be found under the OAuth2 tap on the 
+[developer portal](https://discord.com/developers/applications/)
 
 Run <code>npm install</code> in the bot directory and make sure you get no errors.
 
