@@ -1,19 +1,17 @@
-import { Message } from 'discord.js';
 import { Event } from '../Interfaces'; 
-import { GetFromDBMessage } from '../Utils/Functions';
-import { DBFields } from '../config.json';
-
+import GuildSchema from '../Utils/Schemas/Guild';
 
 export const event: Event = {
     name: 'guildMemberAdd',
-    run: async (client, message: Message) => {
-        // Your code goes here
-        const DBField = DBFields.WelcomeChannelName;
-        const WelcomeChannel = await GetFromDBMessage(DBField, message);
-        
-        if(WelcomeChannel == null) return;
+    run: async (client, member) => {
+        const data = await GuildSchema.findOne({ _id: member.guild.id });
+        if (!data || !data.WelcomeChannelID) return;
 
+        if(data.DefaultRoleID){
+           const Role = member.guild.roles.cache.get(data.DefaultRoleID);
+            if(Role) member.roles.add(Role);
+        }
 
-        
+        return member.guild.channels.cache.get(data.WelcomeChannelID).send({content: `${member} has joined the server!`});
     }
 }

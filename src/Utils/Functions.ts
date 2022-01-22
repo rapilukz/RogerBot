@@ -2,6 +2,7 @@ import {
   CacheType,
   Channel,
   CommandInteraction,
+  GuildMember,
   Message,
   MessageOptions,
   MessageSelectOptionData,
@@ -61,7 +62,13 @@ export const GetRoles = async (message: Message | CommandInteraction | SelectMen
       });
     }
   });
-
+  
+  //Orders the role list by name
+  List.sort((a, b) => {
+    if (a.label < b.label) return -1;
+    if (a.label > b.label) return 1;
+    return 0;
+  });
   return List;
 };
 
@@ -111,7 +118,7 @@ export const GetFromDBInteraction = async (
   }
 };
 
-export const GetFromDBMessage = async (CollectionField: string, message: Message) => {
+export const GetFromDBMessage = async (CollectionField: string, message: Message )  => {
   try {
     const data = await GuildSchema.findOne({ _id: message.guildId });
 

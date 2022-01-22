@@ -6,7 +6,6 @@ import {
   CommandInteraction,
   MessageActionRow,
   MessageSelectMenu,
-  MessageSelectOptionData,
   SelectMenuInteraction,
 } from 'discord.js';
 import { GetChannels, GetFromDBInteraction, GetLabel, GetRoles, SendoToDB } from '../../Utils/Functions';
@@ -59,7 +58,6 @@ const SendRoleRow = async (interaction: CommandInteraction) => {
 
   const CurrentRole = await GetFromDBInteraction(DBFields.DefaultRoleName, interaction);
   await interaction.reply({
-    content: 'dsada',
     components: [row],
     embeds: [
       {

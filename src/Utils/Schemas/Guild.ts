@@ -17,8 +17,8 @@ const GuildSchema = new Schema({
     GoodbyeChannelID: String,
     GoodbyeChannelName: String,
 
-    DefaultRoleName: String,
     DefaultRoleID: String,
+    DefaultRoleName: String,
 })
 
 export default model('Guilds', GuildSchema);

@@ -1,7 +1,6 @@
 import { CommandInteraction } from 'discord.js';
 import { Event } from '../Interfaces';
 import { HandleDefaultRole, HandleGoodbyeChannel, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
-import { GetChannels } from '../Utils/Functions';
 
 export const event: Event = {
   name: 'interactionCreate',
