@@ -1,10 +1,7 @@
 import {
   CacheType,
-  Channel,
   CommandInteraction,
-  GuildMember,
   Message,
-  MessageOptions,
   MessageSelectOptionData,
   SelectMenuInteraction,
   User,
@@ -62,7 +59,7 @@ export const GetRoles = async (message: Message | CommandInteraction | SelectMen
       });
     }
   });
-  
+
   //Orders the role list by name
   List.sort((a, b) => {
     if (a.label < b.label) return -1;
@@ -79,7 +76,7 @@ export const GuildPrefix = async (message: Message) => {
   const data = await GuildSchema.findOne({ _id: GuildID });
 
   if (!data) {
-    await GuildSchema.create({ _id: GuildID, Name: GuildName, prefix: GlobalPrefix });
+    await CreateDB(message);
     return GlobalPrefix;
   }
 
@@ -103,12 +100,20 @@ export const SendoToDB = async (
   }
 };
 
+export const CreateDB = async (interaction: CommandInteraction | Message | SelectMenuInteraction) => {
+  await GuildSchema.create({ _id: interaction.guildId, Name: interaction.guild.name, prefix: GlobalPrefix });
+};
+
 export const GetFromDBInteraction = async (
   CollectionField: string,
   interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>
 ) => {
   try {
     const data = await GuildSchema.findOne({ _id: interaction.guildId });
+    if (!data) {
+      await CreateDB(interaction);
+      return 'None';
+    }
 
     if (!data[CollectionField]) return 'None';
 
@@ -118,9 +123,13 @@ export const GetFromDBInteraction = async (
   }
 };
 
-export const GetFromDBMessage = async (CollectionField: string, message: Message )  => {
+export const GetFromDBMessage = async (CollectionField: string, message: Message) => {
   try {
     const data = await GuildSchema.findOne({ _id: message.guildId });
+    if (!data) {
+      await CreateDB(message);
+      return null;
+    }
 
     if (!data[CollectionField]) return null;
 

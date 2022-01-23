@@ -28,7 +28,7 @@ The bot currently has 4 categories of commands for both Slash and Legacy:
 - Fun
 - Utility  
   
-It as an easy to configure system with the <code>**/config**</code>. It uses Discord's dropdown menus to help you set
+It has an easy to configure system with the <code>**/config**</code>. It uses Discord's dropdown menus to help you set
 channels for different functions of the bot, like **Moderation**, **Welcome** and **Goodbye** channels for your server.
 ## <p id="installation"> ⚙️ Installation </p>
 

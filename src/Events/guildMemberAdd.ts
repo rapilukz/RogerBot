@@ -1,3 +1,4 @@
+import { Role } from 'discord.js';
 import { Event } from '../Interfaces'; 
 import GuildSchema from '../Utils/Schemas/Guild';
 
@@ -9,9 +10,9 @@ export const event: Event = {
 
         if(data.DefaultRoleID){
            const Role = member.guild.roles.cache.get(data.DefaultRoleID);
-            if(Role) member.roles.add(Role);
+           if(Role) member.roles.add(Role);
         }
 
-        return member.guild.channels.cache.get(data.WelcomeChannelID).send({content: `${member} has joined the server!`});
+        return member.guild.channels.cache.get(data.WelcomeChannelID).send({content: `${member} has joined the server! 🥳`});
     }
 }
