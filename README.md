@@ -39,13 +39,16 @@ To Run this bot you will need the follwing things:
 - [MongoDB](https://www.mongodb.com/)  
 
 **Important**: Make sure that your bot has the **applications.commands** application scope enabled, which can be found under the OAuth2 tap on the 
-[developer portal](https://discord.com/developers/applications/)
+[developer portal](https://discord.com/developers/applications/)  
+
 
 Run <code>npm install</code> in the bot directory and make sure you get no errors.
 
 Create a <code>.env</code> file with the following secrets:  
 - <code>TOKEN</code> <b>Discord Bot Token</b>
-- <code>DB_CONNECT</code> <b>MongoDB Connection String</b>  
+- <code>DB_CONNECT</code> <b>MongoDB Connection String</b>    
+
+Inside the <code>config.json</code> in the src folder you will find the bot's default prefix and the name of the fields inside the DB according to the schemas inside the <code>Schemas</code> folder this way you don't have to setup anything inside mongo besides the connection string. 🙂
 
 At the end run <code>npm start</code> and enjoy your experience! 
 
