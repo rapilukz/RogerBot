@@ -133,8 +133,8 @@ export const HandleWelcomeChannel = async (interaction: SelectMenuInteraction<Ca
     const ChannelName = DBFields.WelcomeSchema.ChannelName;
     const ChannelID = DBFields.WelcomeSchema.ChannelID;
 
-    await SendoToDB(ChannelName, value, WelcomeSchema, interaction, );
-    await SendoToDB(ChannelID, Label,  WelcomeSchema, interaction); 
+    await SendoToDB(ChannelID, value, WelcomeSchema, interaction, );
+    await SendoToDB(ChannelName, Label,  WelcomeSchema, interaction); 
     
     interaction.reply({
       embeds: [
@@ -159,8 +159,10 @@ export const HandleDefaultRole = async (interaction: SelectMenuInteraction<Cache
   interaction.values.forEach(async (value) => {
       const Label = GetLabel(options, value);
 
-      await SendoToDB(DBFields.DefaultRoleID, value, GuildSchema, interaction);
-      await SendoToDB(DBFields.DefaultRoleName, Label, GuildSchema, interaction );
+      const RoleName = DBFields.DefaultRoleName;
+      const RoleID = DBFields.DefaultRoleID;
+      await SendoToDB(RoleID, value, GuildSchema, interaction);
+      await SendoToDB(RoleName, Label, GuildSchema, interaction );
 
       interaction.reply({
         embeds: [
@@ -190,8 +192,8 @@ export const HandleFarewellChannel = async (interaction: SelectMenuInteraction<C
     const ChannelID = DBFields.FarewellSchema.ChannelID;
 
     
-    await SendoToDB(ChannelName, value, FarewellSchema, interaction,);
-    await SendoToDB(ChannelID, Label, FarewellSchema,  interaction,);
+    await SendoToDB(ChannelID, value, FarewellSchema, interaction,);
+    await SendoToDB(ChannelName, Label, FarewellSchema,  interaction,);
 
     interaction.reply({
       embeds: [

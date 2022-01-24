@@ -79,7 +79,7 @@ export const GuildPrefix = async (message: Message) => {
   if (!data) {
     await CreateSchema(message, GuildSchema);
 
-    await GuildSchema.findOneAndUpdate({ _id: message.guildId }, { prefix: GlobalPrefix }, { upsert: true });
+    await GuildSchema.findOneAndUpdate({ _id: message.guildId }, { prefix: GlobalPrefix, Guild: GuildName }, { upsert: true });
 
     return GlobalPrefix;
   }
@@ -90,7 +90,7 @@ export const GuildPrefix = async (message: Message) => {
 
 /**
  * Sends the value to the desired field in the DB schema
- * @param {CollectionField} DBField - Field you want to send the value to
+ * @param {CollectionField} CollectionField - Field you want to send the value to
  * @param {any} Value - Value you want to send to the field
  * @param {interaction} interaction - the type of interaction (Message | CommandInteraction | SelectMenuInteraction)
  * @param {Schema} Schema - the mongoose schema
@@ -121,7 +121,7 @@ export const CreateSchema = async (
 
 /**
  * Gets the value of the specified field from the database
- * @param {CollectionField} DBField - Field to get from the database
+ * @param {CollectionField} CollectionField - Field to get from the database
  * @param {Schema} Schema - the mongoose schema
  * @param {interaction} interaction - the type of interaction (Message | CommandInteraction | SelectMenuInteraction)
  */
