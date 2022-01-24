@@ -1,6 +1,6 @@
 import { CommandInteraction } from 'discord.js';
 import { Event } from '../Interfaces';
-import { HandleDefaultRole, HandleGoodbyeChannel, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
+import { HandleDefaultRole, HandleFarewellChannel, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
 
 export const event: Event = {
   name: 'interactionCreate',
@@ -31,8 +31,8 @@ export const event: Event = {
         case 'WelcomeChannel':
           await HandleWelcomeChannel(interaction);
           break;
-        case 'GoodbyeChannel':
-          await HandleGoodbyeChannel(interaction);
+        case 'FarewellChannel':
+          await HandleFarewellChannel(interaction);
           break;
         case 'Role':
           await HandleDefaultRole(interaction);

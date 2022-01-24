@@ -8,15 +8,9 @@ const RequiredString = {
 const GuildSchema = new Schema({
     //Guild ID
     _id: RequiredString,
-    Name: String,
+    Guild: String,
     prefix: String,
    
-    WelcomeChannelID: String,
-    WelcomeChannelName: String,
-   
-    GoodbyeChannelID: String,
-    GoodbyeChannelName: String,
-
     DefaultRoleID: String,
     DefaultRoleName: String,
 })

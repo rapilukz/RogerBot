@@ -1,8 +1,6 @@
 import { Command } from '../../Interfaces'; 
 import { SEND_MESSAGES } from '../../Utils/Permissions' ;
 
-
-
 export const command: Command = {
     name: 'ping',
     aliases: [],
@@ -11,7 +9,7 @@ export const command: Command = {
     category: 'Fun',
     description: 'Test command',
     run: async (client, message, args) => {
-        
+        message.channel.send('Pong!');
     }
 }
 

@@ -8,8 +8,12 @@ import {
   MessageSelectMenu,
   SelectMenuInteraction,
 } from 'discord.js';
-import { GetChannels, GetFromDBInteraction, GetLabel, GetRoles, SendoToDB } from '../../Utils/Functions';
+import { GetChannels, GetFromDB, GetLabel, GetRoles, SendoToDB } from '../../Utils/Functions';
 import { DBFields } from '../../config.json';
+import WelcomeSchema from '../../Utils/Schemas/Welcome';
+import FarewellSchema from '../../Utils/Schemas/Farewell';
+import GuildSchema from '../../Utils/Schemas/Guild';
+
 
 export const command: SlashCommand = {
   category: 'Admin',
@@ -24,7 +28,7 @@ export const command: SlashCommand = {
         .setRequired(true)
         .addChoices([
           ['👋 Welcome Channel 👋', 'Welcome'],
-          ['😠 Goodbye Channel 😠', 'Goodbye'],
+          ['😠 Farewell Channel 😠', 'Farewell'],
           ['📜 Default Role 📜', 'Role'],
         ])
     ),
@@ -36,8 +40,8 @@ export const command: SlashCommand = {
           case 'Welcome':
             SendWelcomeRow(interaction, Channels);
             break;
-          case 'Goodbye':
-            SendGoodbyeRow(interaction, Channels);
+          case 'Farewell':
+            SendFarewellRow(interaction, Channels);
             break;
           case 'Role':
             SendRoleRow(interaction);
@@ -56,13 +60,13 @@ const SendRoleRow = async (interaction: CommandInteraction) => {
     new MessageSelectMenu().setCustomId('Role').setPlaceholder('Available Roles 📚').addOptions(ListOfRoles)
   );
 
-  const CurrentRole = await GetFromDBInteraction(DBFields.DefaultRoleName, interaction);
+  const CurrentRole = await GetFromDB(DBFields.DefaultRoleName, GuildSchema, interaction);
   await interaction.reply({
     components: [row],
     embeds: [
       {
         title: 'Default Role',
-        description: `Default Role: \`${CurrentRole}\``,
+        description: `Default Role: \`${CurrentRole == null ? 'None' : CurrentRole}\``,
         color: 'RANDOM',
       },
     ],
@@ -78,8 +82,9 @@ const SendWelcomeRow = async (
   const row = new MessageActionRow().addComponents(
     new MessageSelectMenu().setCustomId('WelcomeChannel').setPlaceholder('Available Channels 📚').addOptions(options)
   );
-
-  const CurrentChannel = await GetFromDBInteraction(DBFields.WelcomeChannelName, interaction);
+  
+  const ChannelField = DBFields.WelcomeSchema.ChannelName;
+  const CurrentChannel = await GetFromDB(ChannelField, WelcomeSchema, interaction);
 
   await interaction.reply({
     content: `Set the Server's Welcome Channel 🎉`,
@@ -87,7 +92,7 @@ const SendWelcomeRow = async (
     embeds: [
       {
         title: 'Current Channel',
-        description: `Current Channel: \`${CurrentChannel}\``,
+        description: `Current Channel: \`${CurrentChannel == null ? 'None' : CurrentChannel}\``,
         color: 'RANDOM',
       },
     ],
@@ -95,23 +100,24 @@ const SendWelcomeRow = async (
   });
 };
 
-const SendGoodbyeRow = async (
+const SendFarewellRow = async (
   interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
   options: any[]
 ) => {
   const row = new MessageActionRow().addComponents(
-    new MessageSelectMenu().setCustomId('GoodbyeChannel').setPlaceholder('Available Channels 📚').addOptions(options)
+    new MessageSelectMenu().setCustomId('FarewellChannel').setPlaceholder('Available Channels 📚').addOptions(options)
   );
-
-  const CurrentChannel = await GetFromDBInteraction(DBFields.GoodbyeChannelName, interaction);
+  
+  const ChannelField = DBFields.FarewellSchema.ChannelName;
+  const CurrentChannel = await GetFromDB(ChannelField, FarewellSchema, interaction);
 
   await interaction.reply({
-    content: `Set the Server's Goodbye Channel 😢`,
+    content: `Set the Server's Farewell Channel 😢`,
     components: [row],
     embeds: [
       {
         title: 'Current Channel',
-        description: `Current Channel: \`${CurrentChannel}\``,
+        description: `Current Channel: \`${CurrentChannel == null ? 'None' : CurrentChannel}\``,
         color: 'RANDOM',
       },
     ],
@@ -124,9 +130,11 @@ export const HandleWelcomeChannel = async (interaction: SelectMenuInteraction<Ca
   interaction.values.forEach(async (value) => {
     //Value is the id of the channel
     const Label = GetLabel(options, value);
-    
-    SendoToDB(DBFields.WelcomeChannelID, value, interaction);
-    SendoToDB(DBFields.WelcomeChannelName, Label, interaction); 
+    const ChannelName = DBFields.WelcomeSchema.ChannelName;
+    const ChannelID = DBFields.WelcomeSchema.ChannelID;
+
+    await SendoToDB(ChannelName, value, WelcomeSchema, interaction, );
+    await SendoToDB(ChannelID, Label,  WelcomeSchema, interaction); 
     
     interaction.reply({
       embeds: [
@@ -151,8 +159,8 @@ export const HandleDefaultRole = async (interaction: SelectMenuInteraction<Cache
   interaction.values.forEach(async (value) => {
       const Label = GetLabel(options, value);
 
-      SendoToDB(DBFields.DefaultRoleID, value, interaction);
-      SendoToDB(DBFields.DefaultRoleName, Label, interaction);
+      await SendoToDB(DBFields.DefaultRoleID, value, GuildSchema, interaction);
+      await SendoToDB(DBFields.DefaultRoleName, Label, GuildSchema, interaction );
 
       interaction.reply({
         embeds: [
@@ -172,14 +180,18 @@ export const HandleDefaultRole = async (interaction: SelectMenuInteraction<Cache
     });
 };
 
-export const HandleGoodbyeChannel = async (interaction: SelectMenuInteraction<CacheType>) => {
+export const HandleFarewellChannel = async (interaction: SelectMenuInteraction<CacheType>) => {
   const options = await GetChannels(interaction, 'GUILD_TEXT');
   interaction.values.forEach(async (value) => {
     const Label = GetLabel(options, value);
     //Send the ID and the Channel Name to the DB
     
-    SendoToDB(DBFields.GoodbyeChannelID, value, interaction);
-    SendoToDB(DBFields.GoodbyeChannelName, Label, interaction);
+    const ChannelName = DBFields.FarewellSchema.ChannelName;
+    const ChannelID = DBFields.FarewellSchema.ChannelID;
+
+    
+    await SendoToDB(ChannelName, value, FarewellSchema, interaction,);
+    await SendoToDB(ChannelID, Label, FarewellSchema,  interaction,);
 
     interaction.reply({
       embeds: [
