@@ -12,13 +12,7 @@ const FarewellSchema = new Schema({
    
     ChannelID: String,
     ChannelName: String,
-
-    MessageType: {
-        type: String,
-        enum: ['embed', 'text', 'banner'],
-        default: 'text',
-    },
-
+    
     Text: String,
     Embed: JSON,   
 })

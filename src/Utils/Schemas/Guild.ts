@@ -8,10 +8,15 @@ const RequiredString = {
 const GuildSchema = new Schema({
     //Guild ID
     _id: RequiredString,
-    Guild: String,
+    Guild: RequiredString,
     prefix: String,
    
     DefaultRoleID: String,
+    AnnouncementType: {
+        type: String,
+        enum: ['embed', 'text', 'banner'],
+        default: 'banner',
+    },
     DefaultRoleName: String,
 })
 

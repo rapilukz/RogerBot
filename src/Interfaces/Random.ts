@@ -1,13 +1,14 @@
+import { EmojiResolvable } from "discord.js";
+
 export interface Choices {
     label: string;
     value: string;
+    emoji?: EmojiResolvable;
 }
 
-enum TypesOfMessage {
+export enum TypesOfMessage {
     Text = 'text',
     Embed = 'embed',
     Banner = 'banner',
 }
-export interface BotMessageType {
-    Type: TypesOfMessage;
-}
+export type BotMessageType = `${TypesOfMessage}`;

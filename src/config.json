@@ -10,7 +10,8 @@
       "ChannelName": "ChannelName"
     },  
     "DefaultRoleName": "DefaultRoleName",
-    "DefaultRoleID": "DefaultRoleID"
+    "DefaultRoleID": "DefaultRoleID",
+    "AnnouncementType": "AnnouncementType"
   }
   
 }

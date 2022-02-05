@@ -13,12 +13,6 @@ const WelcomeSchema = new Schema({
     ChannelID: String,
     ChannelName: String,
 
-    MessageType: {
-        type: String,
-        enum: ['embed', 'text', 'banner'],
-        default: 'banner',
-    },
-
     Text: String,
     Embed: JSON,   
 })

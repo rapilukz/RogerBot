@@ -1,5 +1,5 @@
 import Client from '../../../Client';
-import { Message } from 'discord.js'; 
+import { Message, MessageEmbed } from 'discord.js'; 
 
 export default function NoCommand(client: Client, message: Message) {
   const embed = client.embed(

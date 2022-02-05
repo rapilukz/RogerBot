@@ -1,6 +1,6 @@
 import { CommandInteraction } from 'discord.js';
 import { Event } from '../Interfaces';
-import { HandleDefaultRole, HandleFarewellChannel, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
+import { HandleDefaultRole, HandleFarewellChannel, HandleAnnouncementType, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
 
 export const event: Event = {
   name: 'interactionCreate',
@@ -36,6 +36,9 @@ export const event: Event = {
           break;
         case 'Role':
           await HandleDefaultRole(interaction);
+          break;
+        case 'AnnouncementType':
+          await HandleAnnouncementType(interaction);
           break;
         default:
           interaction.reply({ content: `Something went wrong!` });

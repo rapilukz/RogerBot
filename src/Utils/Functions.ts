@@ -12,7 +12,7 @@ import RoastEmbed from './Embeds/Random/roast';
 import GuildSchema from '../Utils/Schemas/Guild';
 import { prefix as GlobalPrefix } from '../config.json';
 import { Choices } from '../Interfaces/Random';
-import { Model, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 
 export const isNumber = (input: any): boolean => {
   return !isNaN(input);
