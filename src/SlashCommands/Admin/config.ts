@@ -2,12 +2,13 @@ import { SlashCommand } from '../../Interfaces';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ADMINISTRATOR } from '../../Utils/Permissions';
 import { CacheType, CommandInteraction, MessageActionRow, MessageSelectMenu, SelectMenuInteraction } from 'discord.js';
-import { GetChannels, GetFromDB, GetLabel, GetRoles, SendoToDB } from '../../Utils/Functions';
+import { GetChannels, GetLabel, GetRoles} from '../../Utils/Helpers/Functions';
 import { DBFields } from '../../config.json';
 import WelcomeSchema from '../../Utils/Schemas/Welcome';
 import FarewellSchema from '../../Utils/Schemas/Farewell';
 import GuildSchema from '../../Utils/Schemas/Guild';
 import { BotMessageType, TypesOfMessage, Choices } from '../../Interfaces/Random';
+import { GetFromDB, SendoToDB } from '../../Utils/Helpers/MongoFunctions';
 
 export const command: SlashCommand = {
   category: 'Admin',

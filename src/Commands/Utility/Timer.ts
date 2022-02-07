@@ -2,7 +2,7 @@ import { Command } from '../../Interfaces';
 import { SEND_MESSAGES } from '../../Utils/Permissions';
 import { Timer, EndTimer } from '../../Utils/Embeds/Random/Timer';
 import ms from 'ms';
-import { isNumber } from '../../Utils/Functions';
+import { isNumber } from '../../Utils/Helpers/Functions';
 
 export const command: Command = {
   name: 'timer',

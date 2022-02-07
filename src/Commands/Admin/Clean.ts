@@ -1,6 +1,6 @@
 import { Command } from '../../Interfaces';
 import { ADMINISTRATOR } from '../../Utils/Permissions';
-import { isNumber } from '../../Utils/Functions';
+import { isNumber } from '../../Utils/Helpers/Functions';
 import { TextChannel } from 'discord.js';
 
 

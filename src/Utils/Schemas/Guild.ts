@@ -17,6 +17,10 @@ const GuildSchema = new Schema({
         enum: ['embed', 'text', 'banner'],
         default: 'banner',
     },
+    CanvasImage: {
+        type: Buffer,
+        default: '',
+    },
     DefaultRoleName: String,
 })
 

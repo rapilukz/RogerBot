@@ -11,7 +11,9 @@
     },  
     "DefaultRoleName": "DefaultRoleName",
     "DefaultRoleID": "DefaultRoleID",
-    "AnnouncementType": "AnnouncementType"
+    "AnnouncementType": "AnnouncementType",
+    "CanvasImage": "CanvasImage"
+
   }
   
 }

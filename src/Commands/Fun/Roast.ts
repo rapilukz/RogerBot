@@ -1,6 +1,6 @@
 import { Command } from '../../Interfaces';
 import { SEND_MESSAGES } from '../../Utils/Permissions';
-import { roast } from '../../Utils/Functions';
+import { roast } from '../../Utils/Helpers/Functions';
 
 export const command: Command = {
   name: 'roast',

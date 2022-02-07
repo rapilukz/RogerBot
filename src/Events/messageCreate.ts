@@ -2,7 +2,7 @@ import { Message, Collection } from 'discord.js';
 import { Event } from '../Interfaces';
 import { prefix as GlobalPrefix } from '../config.json';
 import NoCommand from '../Utils/Embeds/Command/NoCommand';
-import { GuildPrefix } from '../Utils/Functions';
+import { GuildPrefix } from '../Utils/Helpers/Functions';
 
 export const event: Event = {
   name: 'messageCreate',

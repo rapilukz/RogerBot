@@ -1,18 +1,23 @@
 import {
+  AllowedImageSize,
   CacheType,
   CommandInteraction,
+  GuildMember,
   Message,
+  MessageAttachment,
   MessageSelectOptionData,
   SelectMenuInteraction,
   User,
 } from 'discord.js';
-import Client from '../Client';
+import Client from '../../Client';
 import fetch from 'node-fetch';
-import RoastEmbed from './Embeds/Random/roast';
-import GuildSchema from '../Utils/Schemas/Guild';
-import { prefix as GlobalPrefix } from '../config.json';
-import { Choices } from '../Interfaces/Random';
-import { Model } from 'mongoose';
+import RoastEmbed from '../Embeds/Random/roast';
+import GuildSchema from '../Schemas/Guild';
+import { prefix as GlobalPrefix } from '../../config.json';
+import { Choices } from '../../Interfaces/Random';
+import Canvas from 'canvas';
+import path from 'path';
+import { CreateSchema } from './MongoFunctions';
 
 export const isNumber = (input: any): boolean => {
   return !isNaN(input);
@@ -79,70 +84,17 @@ export const GuildPrefix = async (message: Message) => {
   if (!data) {
     await CreateSchema(message, GuildSchema);
 
-    await GuildSchema.findOneAndUpdate({ _id: message.guildId }, { prefix: GlobalPrefix, Guild: GuildName }, { upsert: true });
+    await GuildSchema.findOneAndUpdate(
+      { _id: message.guildId },
+      { prefix: GlobalPrefix, Guild: GuildName },
+      { upsert: true }
+    );
 
     return GlobalPrefix;
   }
 
   const prefix = data.prefix;
   return prefix;
-};
-
-/**
- * Sends the value to the desired field in the DB schema
- * @param {CollectionField} CollectionField - Field you want to send the value to
- * @param {any} Value - Value you want to send to the field
- * @param {interaction} interaction - the type of interaction (Message | CommandInteraction | SelectMenuInteraction)
- * @param {Schema} Schema - the mongoose schema
- */
-export const SendoToDB = async (
-  CollectionField: string,
-  value: any,
-  Schema: Model<any>,
-  interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>
-) => {
-  try {
-    await Schema.findOneAndUpdate(
-      { _id: interaction.guildId },
-      { $set: { [CollectionField]: value, _id: interaction.guildId, Name: interaction.guild.name } },
-      { upsert: true }
-    );
-  } catch {
-    interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-  }
-};
-
-export const CreateSchema = async (
-  interaction: CommandInteraction | Message | SelectMenuInteraction,
-  Schema: Model<any, any, any>
-) => {
-  await Schema.create({ _id: interaction.guildId, Guild: interaction.guild.name });
-};
-
-/**
- * Gets the value of the specified field from the database
- * @param {CollectionField} CollectionField - Field to get from the database
- * @param {Schema} Schema - the mongoose schema
- * @param {interaction} interaction - the type of interaction (Message | CommandInteraction | SelectMenuInteraction)
- */
-export const GetFromDB = async (
-  CollectionField: string,
-  Schema: Model<any, any, any>,
-  interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType> | Message
-) => {
-  try {
-    const data = await Schema.findOne({ _id: interaction.guildId });
-    if (!data) {
-      await CreateSchema(interaction, Schema);
-      return null;
-    }
-
-    if (!data[CollectionField]) return null;
-
-    return data[CollectionField];
-  } catch (err) {
-    console.log(err);
-  }
 };
 
 export const GetLabel = (options: MessageSelectOptionData[] | MessageSelectOptionData[][], value: string) => {
@@ -153,4 +105,58 @@ export const GetLabel = (options: MessageSelectOptionData[] | MessageSelectOptio
     }
   });
   return label;
+};
+
+export const CreateBanner = async (member: GuildMember) => {
+  /* const Image = await GetFromDB() */
+
+  const av = {
+    size: 128 as AllowedImageSize,
+    x: 280,
+    y: 15,
+  }
+
+  const dim = {
+    height: 250,
+    width: 700,
+    margin: 180,
+  }
+
+  let username = member.user.username;
+  let discriminator = member.user.discriminator;
+  let avatar = member.user.displayAvatarURL({ format: 'png', dynamic: true, size: av.size });
+  const background = path.join(__dirname, '../../Content/background.png');
+  
+  const canvas = Canvas.createCanvas(dim.width, dim.height);
+  const ctx = canvas.getContext('2d');
+  //draws the background
+  const backgroundImage = await Canvas.loadImage(background);
+  ctx.drawImage(backgroundImage, 0, 0);
+
+  //loads the avatar
+  const avatarImage = await Canvas.loadImage(avatar);
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(av.x + av.size / 2, av.y + av.size / 2, av.size / 2, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.clip();
+
+  //draws the avatar
+  ctx.drawImage(avatarImage, av.x, av.y);
+  ctx.restore();
+
+  //write in text
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+
+  ctx.font = '26px sans-serif';
+  ctx.fillText(`Welcome ${username}#${discriminator}!`, dim.width / 2, dim.margin);
+
+  ctx.font = '26px sans-serif';
+  ctx.fillText(`Member #${member.guild.memberCount}`, dim.width / 2, dim.margin + 35);
+
+
+  const attachment = new MessageAttachment(canvas.toBuffer());
+
+  return attachment;
 };
