@@ -4,8 +4,6 @@ import {
   MessageEmbedOptions,
   MessageEmbed,
   Message,
-  CommandInteraction,
-  ApplicationCommandDataResolvable,
   UserApplicationCommandData,
 } from 'discord.js';
 import { connect } from 'mongoose';

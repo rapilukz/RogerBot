@@ -107,11 +107,12 @@ export const GetLabel = (options: MessageSelectOptionData[] | MessageSelectOptio
   return label;
 };
 
+//Depression was inveted here 
 export const CreateBanner = async (member: GuildMember) => {
   /* const Image = await GetFromDB() */
 
   const av = {
-    size: 128 as AllowedImageSize,
+    size: 128 as AllowedImageSize, //258 
     x: 280,
     y: 15,
   }

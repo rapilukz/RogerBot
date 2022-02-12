@@ -9,10 +9,12 @@
       "ChannelID": "ChannelID",
       "ChannelName": "ChannelName"
     },  
-    "DefaultRoleName": "DefaultRoleName",
-    "DefaultRoleID": "DefaultRoleID",
-    "AnnouncementType": "AnnouncementType",
-    "CanvasImage": "CanvasImage"
+    "GuildSchema":{
+      "DefaultRoleName": "DefaultRoleName",
+      "DefaultRoleID": "DefaultRoleID",
+      "AnnouncementType": "AnnouncementType"
+
+    }
 
   }
   

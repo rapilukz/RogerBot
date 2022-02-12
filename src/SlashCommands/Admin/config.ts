@@ -59,7 +59,8 @@ const SendRoleRow = async (interaction: CommandInteraction) => {
     new MessageSelectMenu().setCustomId('Role').setPlaceholder('Available Roles 📚').addOptions(ListOfRoles)
   );
 
-  const CurrentRole = await GetFromDB(DBFields.DefaultRoleName, GuildSchema, interaction);
+  const RoleField = DBFields.GuildSchema.DefaultRoleName;
+  const CurrentRole = await GetFromDB(RoleField, GuildSchema, interaction);
   await interaction.reply({
     components: [row],
     embeds: [
@@ -76,7 +77,8 @@ const SendRoleRow = async (interaction: CommandInteraction) => {
 const SendAnnouncementTypeRow = async (interaction: CommandInteraction) => {
   const MessageTypes: BotMessageType[] = Object.values(TypesOfMessage);
   const List: Choices[] = [];
-  const CurrentType = await GetFromDB(DBFields.AnnouncementType, GuildSchema, interaction);
+  const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
+  const CurrentType = await GetFromDB(AnnouncementField, GuildSchema, interaction);
 
   MessageTypes.forEach((type) => {
     List.push({
@@ -181,8 +183,9 @@ export const HandleWelcomeChannel = async (interaction: SelectMenuInteraction<Ca
 };
 
 export const HandleAnnouncementType = async (interaction: SelectMenuInteraction<CacheType>) => {
+  const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
   interaction.values.forEach(async (value) => {
-    await SendoToDB(DBFields.AnnouncementType, value, GuildSchema, interaction);
+    await SendoToDB(AnnouncementField, value, GuildSchema, interaction);
     
     interaction.reply({
       embeds: [
@@ -207,8 +210,8 @@ export const HandleDefaultRole = async (interaction: SelectMenuInteraction<Cache
   interaction.values.forEach(async (value) => {
     const Label = GetLabel(options, value);
 
-    const RoleName = DBFields.DefaultRoleName;
-    const RoleID = DBFields.DefaultRoleID;
+    const RoleName = DBFields.GuildSchema.DefaultRoleName;
+    const RoleID = DBFields.GuildSchema.DefaultRoleID;
     await SendoToDB(RoleID, value, GuildSchema, interaction);
     await SendoToDB(RoleName, Label, GuildSchema, interaction);
 
