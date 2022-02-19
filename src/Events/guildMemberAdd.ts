@@ -17,7 +17,7 @@ export const event: Event = {
     if (!data) return;
 
     // Assigns the default role to the new member
-    if (data.DefaultRoleID) {
+    if (data.DefaultRoleID || data.DefaultRoleID != 'None') {
       const Role = member.guild.roles.cache.get(data.DefaultRoleID);
       if (Role) member.roles.add(Role);
     }

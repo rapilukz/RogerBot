@@ -6,6 +6,7 @@ import {
   HandleAnnouncementType,
   HandleTwitchNotifications,
   HandleWelcomeChannel,
+  HandleTwitchChannel,
 } from '../Utils/Helpers/RowHandlers';
 
 export const event: Event = {
@@ -47,6 +48,9 @@ export const event: Event = {
           break;
         case 'TwitchNotifications':
           await HandleTwitchNotifications(interaction);
+          break;
+        case 'TwitchChannel':
+          await HandleTwitchChannel(interaction);
           break;
         default:
           interaction.reply({ content: `Something went wrong!`, ephemeral: true });

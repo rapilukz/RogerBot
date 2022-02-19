@@ -1,5 +1,5 @@
 import { SlashCommand } from '../../Interfaces';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import {
   CacheType,
@@ -34,6 +34,7 @@ export const command: SlashCommand = {
           ['😠 Farewell Channel', 'Farewell'],
           ['✍️ Announcement Type ', 'Message'],
           ['📷 Twitch Notifications ', 'EnableTwitchNotifications'],
+          ['📺 Twitch Channel ', 'TwitchChannel'],
           ['📜 Default Role ', 'Role'],
         ])
         .setDescription('Select an option')
@@ -56,9 +57,11 @@ export const command: SlashCommand = {
             AnnouncementType(interaction);
             break;
           case 'EnableTwitchNotifications':
-            EnableTwitchNotification(interaction,);
+            EnableTwitchNotification(interaction);
             break;
-          
+          case 'TwitchChannel':
+            TwitchChannel(interaction, Channels);
+            break;
           default:
             interaction.reply({ content: `Something went wrong!`, ephemeral: true });
         }
@@ -105,7 +108,7 @@ const AnnouncementType = async (interaction: CommandInteraction) => {
 /* Welcome */
 const Welcome = async (
   interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
-  options: any[]
+  options: MessageSelectOptionData[]
 ) => {
   //Current Welcome Channel
   const row = new MessageActionRow().addComponents(
@@ -134,7 +137,7 @@ const Welcome = async (
 /* Farewell */
 const Farewell = async (
   interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
-  options: any[]
+  options: MessageSelectOptionData[]
 ) => {
   const row = new MessageActionRow().addComponents(
     new MessageSelectMenu().setCustomId('FarewellChannel').setPlaceholder('Available Channels 📚').addOptions(options)
@@ -233,6 +236,43 @@ const EnableTwitchNotification = async (interaction: CommandInteraction) => {
   });
 };
 
-const TwitchNotificationChannel = async (interaction: CommandInteraction) => {
-   
-}
+const TwitchChannel = async (
+  interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
+  options: MessageSelectOptionData[]
+) => {
+  const TwitchIcon = interaction.client.emojis.cache.get(Emojis.TwitchBack);
+  const row = new MessageActionRow().addComponents(
+    new MessageSelectMenu()
+      .setCustomId('TwitchChannel')
+      .setPlaceholder(`Available Channels 📚`)
+      .addOptions(options)
+  );
+
+  const ChannelField = DBFields.TwitchSchema.ChannelName;
+  const guildId = interaction.guildId;
+  const guildName = interaction.guild.name;
+
+  const NotificationsEnabled = DBFields.TwitchSchema.NotificationsEnabled;
+  const isEnabled = await GetFromDB(NotificationsEnabled, TwitchSchema, guildId, guildName);
+
+  if (!isEnabled) {
+    return interaction.reply({
+      content: `${TwitchIcon} Twitch Notifications are **disabled**. Please enable them first with \`/config\``,
+      ephemeral: true,
+    });
+  }
+
+  const CurrentChannel = await GetFromDB(ChannelField, TwitchSchema, guildId, guildName);
+
+  await interaction.reply({
+    components: [row],
+    embeds: [
+      {
+        title: `${TwitchIcon} Twitch Notifications Channel`,
+        description: `Current Channel: ${CurrentChannel == null ? '\`None\`' : `\`${CurrentChannel}\``}`,
+        color: '#A077FF',
+      },
+    ],
+    ephemeral: true,
+  });
+};

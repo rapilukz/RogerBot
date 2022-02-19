@@ -42,7 +42,7 @@ export const roast = async (user: User, client: Client, message: Message) => {
 export const GetChannels = async (
   message: Message | CommandInteraction | SelectMenuInteraction<CacheType>,
   Type: 'GUILD_TEXT' | 'GUILD_VOICE' | 'GUILD_CATEGORY' | 'GUILD_NEWS' | 'GUILD_STORE'
-) => {
+) : Promise<MessageSelectOptionData[]> => {
   const Channels = await message.guild.channels.fetch();
   const TextChannels: MessageSelectOptionData[] = Channels.filter((channel) => channel.type == Type).map((channel) => {
     return {
@@ -60,7 +60,7 @@ export const GetChannels = async (
   return TextChannels;
 };
 
-export const GetRoles = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>) => {
+export const GetRoles = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>) : Promise<MessageSelectOptionData[]> => {
   const roles = await message.guild.roles.fetch();
   const List: MessageSelectOptionData[] = [];
   roles.map((role) => {

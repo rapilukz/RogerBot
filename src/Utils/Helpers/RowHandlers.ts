@@ -150,3 +150,34 @@ export const HandleTwitchNotifications = async (interaction: SelectMenuInteracti
       });
     });
   };
+
+  export const HandleTwitchChannel = async (interaction: SelectMenuInteraction<CacheType>) => {
+    const options = await GetChannels(interaction, 'GUILD_TEXT');
+    const guildId = interaction.guildId;
+    const TwitchIcon = interaction.client.emojis.cache.get(Emojis.TwitchBack);
+    
+    interaction.values.forEach(async (value) => {
+      const Label = GetLabel(options, value);
+      const ChannelName = DBFields.TwitchSchema.ChannelName;
+      const ChannelID = DBFields.TwitchSchema.ChannelID;
+  
+      await SendoToDB(ChannelID, value, TwitchSchema, guildId);
+      await SendoToDB(ChannelName, Label, TwitchSchema, guildId);
+
+      interaction.reply({
+        embeds: [
+          {
+            title: `${TwitchIcon} Twitch Notification Channel`,
+            description: `Twitch Channel set to \`${Label}\``,
+            color: 'GREEN',
+            timestamp: new Date(),
+            footer: {
+              text: `Set By ${interaction.user.username}#${interaction.user.discriminator}`,
+              icon_url: interaction.user.avatarURL(),
+            },
+          },
+        ],
+        ephemeral: true,
+      })
+    });
+  };
