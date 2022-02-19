@@ -1,5 +1,3 @@
-import { EmojiResolvable } from "discord.js";
-
 export enum TypesOfMessage {
     Text = 'text',
     Embed = 'embed',

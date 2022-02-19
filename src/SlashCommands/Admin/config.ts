@@ -17,7 +17,10 @@ import GuildSchema from '../../Utils/Schemas/Guild';
 import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { BotMessageType, TypesOfMessage } from '../../Interfaces/Random';
 import { GetFromDB, SendoToDB } from '../../Utils/Helpers/MongoFunctions';
+import EmojiList from '../../Utils/Helpers/Classes/EmojiList';
+import Client from '../../Client';
 
+const emojis = new EmojiList();
 export const command: SlashCommand = {
   category: 'Admin',
   userPermissions: [ADMINISTRATOR],
@@ -37,25 +40,25 @@ export const command: SlashCommand = {
         ])
         .setDescription('Select an option')
     ),
-  run: async (interaction: CommandInteraction) => {
+  run: async (interaction: CommandInteraction, client) => {
     const Channels = await GetChannels(interaction, 'GUILD_TEXT');
     if (interaction.isAutocomplete) {
       interaction.options.data.forEach((option) => {
         switch (option.value) {
           case 'Welcome':
-            SendWelcomeRow(interaction, Channels);
+            Welcome(interaction, Channels);
             break;
           case 'Farewell':
-            SendFarewellRow(interaction, Channels);
+            Farewell(interaction, Channels);
             break;
           case 'Role':
-            SendRoleRow(interaction);
+            Role(interaction);
             break;
           case 'Message':
-            SendAnnouncementTypeRow(interaction);
+            AnnouncementType(interaction);
             break;
           case 'Notifications':
-            SendTwitchNotificationRow(interaction);
+            EnableTwitchNotification(interaction, client);
             break;
           default:
             interaction.reply({ content: `Something went wrong!`, ephemeral: true });
@@ -66,7 +69,7 @@ export const command: SlashCommand = {
 };
 
 /* AnnouncementType */
-const SendAnnouncementTypeRow = async (interaction: CommandInteraction) => {
+const AnnouncementType= async (interaction: CommandInteraction) => {
   const MessageTypes: BotMessageType[] = Object.values(TypesOfMessage);
   const List: MessageSelectOptionData[] = [];
   const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
@@ -100,32 +103,8 @@ const SendAnnouncementTypeRow = async (interaction: CommandInteraction) => {
   });
 };
 
-export const HandleAnnouncementType = async (interaction: SelectMenuInteraction<CacheType>) => {
-  const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
-  const guildId = interaction.guildId;
-  interaction.values.forEach(async (value) => {
-    await SendoToDB(AnnouncementField, value, GuildSchema, guildId);
-
-    interaction.reply({
-      embeds: [
-        {
-          title: 'Announcement Type',
-          description: `Announcement type set to \`${value}\``,
-          color: 'GREEN',
-          timestamp: new Date(),
-          footer: {
-            text: `Set By ${interaction.user.username}#${interaction.user.discriminator}`,
-            icon_url: interaction.user.avatarURL(),
-          },
-        },
-      ],
-      ephemeral: true,
-    });
-  });
-};
-
 /* Welcome */
-const SendWelcomeRow = async (
+const Welcome = async (
   interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
   options: any[]
 ) => {
@@ -153,38 +132,8 @@ const SendWelcomeRow = async (
   });
 };
 
-export const HandleWelcomeChannel = async (interaction: SelectMenuInteraction<CacheType>) => {
-  const options = await GetChannels(interaction, 'GUILD_TEXT');
-  const guildId = interaction.guildId;
-  interaction.values.forEach(async (value) => {
-    //Value is the id of the channel
-    const Label = GetLabel(options, value);
-    const ChannelName = DBFields.WelcomeSchema.ChannelName;
-    const ChannelID = DBFields.WelcomeSchema.ChannelID;
-
-    await SendoToDB(ChannelID, value, WelcomeSchema, guildId);
-    await SendoToDB(ChannelName, Label, WelcomeSchema, guildId);
-
-    interaction.reply({
-      embeds: [
-        {
-          title: 'Welcome Channel',
-          description: `Welcome Channel set to \`${Label}\``,
-          color: 'GREEN',
-          timestamp: new Date(),
-          footer: {
-            text: `Set By ${interaction.user.username}#${interaction.user.discriminator}`,
-            icon_url: interaction.user.avatarURL(),
-          },
-        },
-      ],
-      ephemeral: true,
-    });
-  });
-};
-
 /* Farewell */
-const SendFarewellRow = async (
+const Farewell = async (
   interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
   options: any[]
 ) => {
@@ -210,39 +159,8 @@ const SendFarewellRow = async (
   });
 };
 
-export const HandleFarewellChannel = async (interaction: SelectMenuInteraction<CacheType>) => {
-  const options = await GetChannels(interaction, 'GUILD_TEXT');
-  const guildId = interaction.guildId;
-  interaction.values.forEach(async (value) => {
-    const Label = GetLabel(options, value);
-    //Send the ID and the Channel Name to the DB
-
-    const ChannelName = DBFields.FarewellSchema.ChannelName;
-    const ChannelID = DBFields.FarewellSchema.ChannelID;
-
-    await SendoToDB(ChannelID, value, FarewellSchema, guildId);
-    await SendoToDB(ChannelName, Label, FarewellSchema, guildId);
-
-    interaction.reply({
-      embeds: [
-        {
-          title: 'Goodbye Channel',
-          description: `Goodbye Channel set to \`${Label}\``,
-          color: 'GREEN',
-          timestamp: new Date(),
-          footer: {
-            text: `Set By ${interaction.user.username}#${interaction.user.discriminator}`,
-            icon_url: interaction.user.avatarURL(),
-          },
-        },
-      ],
-      ephemeral: true,
-    });
-  });
-};
-
 /* Role  */
-const SendRoleRow = async (interaction: CommandInteraction) => {
+const Role = async (interaction: CommandInteraction) => {
   const ListOfRoles = await GetRoles(interaction);
   const row = new MessageActionRow().addComponents(
     new MessageSelectMenu().setCustomId('Role').setPlaceholder('Available Roles 📚').addOptions(ListOfRoles)
@@ -266,37 +184,9 @@ const SendRoleRow = async (interaction: CommandInteraction) => {
     ephemeral: true,
   });
 };
-export const HandleDefaultRole = async (interaction: SelectMenuInteraction<CacheType>) => {
-  const options = await GetRoles(interaction);
-  const guildId = interaction.guildId;
-  interaction.values.forEach(async (value) => {
-    const Label = GetLabel(options, value);
-
-    const RoleName = DBFields.GuildSchema.DefaultRoleName;
-    const RoleID = DBFields.GuildSchema.DefaultRoleID;
-    await SendoToDB(RoleID, value, GuildSchema, guildId);
-    await SendoToDB(RoleName, Label, GuildSchema, guildId);
-
-    interaction.reply({
-      embeds: [
-        {
-          title: 'Default Role',
-          description: `Default Role set to \`${Label}\``,
-          color: 'GREEN',
-          timestamp: new Date(),
-          footer: {
-            text: `Set By ${interaction.user.username}#${interaction.user.discriminator}`,
-            icon_url: interaction.user.avatarURL(),
-          },
-        },
-      ],
-      ephemeral: true,
-    });
-  });
-};
 
 /* Enable Twitch Notifications */
-const SendTwitchNotificationRow = async (interaction: CommandInteraction) => {
+const EnableTwitchNotification = async (interaction: CommandInteraction, client: Client) => {
   const options: MessageSelectOptionData[] = [
     {
       label: 'Enable',
@@ -320,12 +210,13 @@ const SendTwitchNotificationRow = async (interaction: CommandInteraction) => {
       .setPlaceholder('Enable/Disable Notifications')
       .addOptions(options)
   );
+  const TwitchIcon = emojis.getEmoji(client, emojis.TwitchBack);
 
   await interaction.reply({
     components: [row],
     embeds: [
       {
-        title: '📸 Twitch Notifications',
+        title: `${TwitchIcon} Twitch Notifications`,
         fields: [
           {
             name: 'Current State:',
@@ -342,29 +233,5 @@ const SendTwitchNotificationRow = async (interaction: CommandInteraction) => {
   });
 };
 
-export const HandleTwitchNotifications = async (interaction: SelectMenuInteraction<CacheType>) => {
-  const guildId = interaction.guildId;
-  const DBField = DBFields.TwitchSchema.NotificationsEnabled;
-  interaction.values.forEach(async (value) => {
-    await SendoToDB(DBField, value, TwitchSchema, guildId);
 
-    interaction.reply({
-      embeds: [
-        {
-          title: '📸 Twitch Notifications',
-          fields: [
-            {
-              name: 'Notifications set to:',
-              value: `${value == 'true' ? '✅ **Enabled**' : '❌ **Disabled**'}`,
-            },
-          ],
-          thumbnail: {
-            url: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthisonlineworld.com%2Fwp-content%2Fuploads%2F2018%2F02%2Ftwitch-app-logo.jpg&f=1&nofb=1',
-          },
-          color: '#A077FF',
-        },
-      ],
-      ephemeral: true,
-    });
-  });
-};
+

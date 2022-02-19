@@ -6,7 +6,7 @@ import {
   HandleAnnouncementType,
   HandleTwitchNotifications,
   HandleWelcomeChannel,
-} from '../SlashCommands/Admin/config';
+} from '../Utils/Helpers/RowHandlers';
 
 export const event: Event = {
   name: 'interactionCreate',
@@ -24,7 +24,7 @@ export const event: Event = {
       }
 
       try {
-        await command.run(interaction);
+        await command.run(interaction, client);
       } catch (error) {
         console.error(error);
         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });

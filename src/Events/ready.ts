@@ -34,7 +34,7 @@ export const event: Event = {
       i++;
     }, 10000); // 10 seconds in ms
 
-   
+
     //Check if twitch is enabled in the config.json so other developers can decide not to use the twitch integration
     if (EnableTwitch) {
       let Token: string;

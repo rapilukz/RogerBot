@@ -1,5 +1,5 @@
 import { Event } from '../Interfaces';
-import { GuildMember, MessageAttachment } from 'discord.js';
+import { GuildMember } from 'discord.js';
 import GuildSchema from '../Utils/Schemas/Guild';
 import WelcomeSchema from '../Utils/Schemas/Welcome';
 import { CreateBanner } from '../Utils/Helpers/Functions';
@@ -9,8 +9,8 @@ export const event: Event = {
   run: async (client, member: GuildMember) => {
     const GuildID = member.guild.id;
     const welcomeData = await WelcomeSchema.findOne({ _id: GuildID });
+    if (!welcomeData || welcomeData.WelcomeChannelID) return;
     const WelcomeChannel = client.channels.cache.get(welcomeData.ChannelID) as any;
-    if (!welcomeData || !WelcomeChannel) return;
 
     // Checks if the guild has a default role set
     const data = await GuildSchema.findOne({ _id: GuildID });

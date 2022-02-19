@@ -11,6 +11,5 @@ export const command: SlashCommand = {
     .setDefaultPermission(true),
     run: async (interaction: CommandInteraction) => {
         interaction.reply('Pong!');
-        
     }
 }
