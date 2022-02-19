@@ -1,6 +1,12 @@
 import { CommandInteraction } from 'discord.js';
 import { Event } from '../Interfaces';
-import { HandleDefaultRole, HandleFarewellChannel, HandleAnnouncementType, HandleWelcomeChannel } from '../SlashCommands/Admin/config';
+import {
+  HandleDefaultRole,
+  HandleFarewellChannel,
+  HandleAnnouncementType,
+  HandleTwitchNotifications,
+  HandleWelcomeChannel,
+} from '../SlashCommands/Admin/config';
 
 export const event: Event = {
   name: 'interactionCreate',
@@ -10,7 +16,7 @@ export const event: Event = {
       if (!command) return;
 
       // Basic Permissions Check
-      if (!interaction.memberPermissions.has(command.userPermissions)){
+      if (!interaction.memberPermissions.has(command.userPermissions)) {
         return interaction.reply({
           content: `You don't have the required permissions to use this command!`,
           ephemeral: true,
@@ -24,7 +30,6 @@ export const event: Event = {
         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
       }
     }
-
 
     if (interaction.isSelectMenu()) {
       switch (interaction.customId) {
@@ -40,8 +45,11 @@ export const event: Event = {
         case 'AnnouncementType':
           await HandleAnnouncementType(interaction);
           break;
+        case 'TwitchNotifications':
+          await HandleTwitchNotifications(interaction);
+          break;
         default:
-          interaction.reply({ content: `Something went wrong!` });
+          interaction.reply({ content: `Something went wrong!`, ephemeral: true });
           break;
       }
     }

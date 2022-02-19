@@ -108,6 +108,7 @@ class ExtendedClient extends Client {
       this.on(event.name, event.run.bind(null, this));
     });
   }
+  
   private async InitHandlers() {
     this.EventHandler();
     this.CommandHandler();
@@ -119,7 +120,8 @@ class ExtendedClient extends Client {
     this.OpenConnection(); // Open connection to MongoDB
     this.InitHandlers(); // Initialize Command and Event handlers
 
-    console.log(table.toString());
+   /*  console.log(table.toString()); */
+
   }
 }
 

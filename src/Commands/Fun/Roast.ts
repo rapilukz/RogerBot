@@ -1,5 +1,5 @@
 import { Command } from '../../Interfaces';
-import { SEND_MESSAGES } from '../../Utils/Permissions';
+import { SEND_MESSAGES } from '../../Utils/Helpers/Permissions';
 import { roast } from '../../Utils/Helpers/Functions';
 
 export const command: Command = {
