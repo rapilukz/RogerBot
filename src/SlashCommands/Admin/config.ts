@@ -35,6 +35,7 @@ export const command: SlashCommand = {
           ['📷 Twitch Notifications ', 'Notifications'],
           ['📜 Default Role ', 'Role'],
         ])
+        .setDescription('Select an option')
     ),
   run: async (interaction: CommandInteraction) => {
     const Channels = await GetChannels(interaction, 'GUILD_TEXT');
