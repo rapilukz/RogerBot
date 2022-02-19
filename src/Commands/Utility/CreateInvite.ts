@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js';
 import { Command } from '../../Interfaces';
 import InviteEmbed from '../../Utils/Embeds/Random/Invite';
-import { CREATE_INSTANT_INVITE, SEND_MESSAGES, EMBED_LINKS } from '../../Utils/Permissions';
+import { CREATE_INSTANT_INVITE, SEND_MESSAGES, EMBED_LINKS } from '../../Utils/Helpers/Permissions';
 
 export const command: Command = {
   name: 'invite',

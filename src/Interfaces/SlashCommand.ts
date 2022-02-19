@@ -1,8 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import Client from '../Client';
 import { CommandInteraction, PermissionResolvable } from 'discord.js';
 
 export interface Run {
-  (interaction: CommandInteraction);
+  (interaction: CommandInteraction, client: Client);
 }
 
 export interface SlashCommand {

@@ -1,5 +1,5 @@
 import { Command } from '../../Interfaces';
-import { BAN_MEMBERS } from '../../Utils/Permissions';
+import { BAN_MEMBERS } from '../../Utils/Helpers/Permissions';
 import { GuildMember } from 'discord.js';
 import { BanServerEmbed, SendBanEmbedDM } from '../../Utils/Embeds/Moderation/Ban';
 

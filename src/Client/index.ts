@@ -9,8 +9,7 @@ import {
 import { connect } from 'mongoose';
 import path from 'path';
 import { readdirSync } from 'fs';
-import { Command, Config, SlashCommand } from '../Interfaces';
-import ConfigJson from '../config.json';
+import { Command, SlashCommand } from '../Interfaces';
 import dotenv from 'dotenv';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
@@ -27,7 +26,6 @@ class ExtendedClient extends Client {
   public events: Collection<string, Command> = new Collection();
   public cooldowns: Collection<string, Collection<string, number>> = new Collection();
   public categories: Set<string> = new Set();
-  public config: Config = ConfigJson;
   public aliases: Collection<string, Command> = new Collection();
   public embed(options: MessageEmbedOptions, message: Message): MessageEmbedOptions {
     return new MessageEmbed({ ...options })
@@ -108,6 +106,7 @@ class ExtendedClient extends Client {
       this.on(event.name, event.run.bind(null, this));
     });
   }
+  
   private async InitHandlers() {
     this.EventHandler();
     this.CommandHandler();
@@ -119,7 +118,8 @@ class ExtendedClient extends Client {
     this.OpenConnection(); // Open connection to MongoDB
     this.InitHandlers(); // Initialize Command and Event handlers
 
-    console.log(table.toString());
+   /*  console.log(table.toString()); */
+
   }
 }
 

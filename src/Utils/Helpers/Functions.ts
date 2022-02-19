@@ -14,7 +14,6 @@ import fetch from 'node-fetch';
 import RoastEmbed from '../Embeds/Random/roast';
 import GuildSchema from '../Schemas/Guild';
 import { prefix as GlobalPrefix } from '../../config.json';
-import { Choices } from '../../Interfaces/Random';
 import Canvas from 'canvas';
 import path from 'path';
 import { CreateSchema } from './MongoFunctions';
@@ -43,23 +42,30 @@ export const roast = async (user: User, client: Client, message: Message) => {
 export const GetChannels = async (
   message: Message | CommandInteraction | SelectMenuInteraction<CacheType>,
   Type: 'GUILD_TEXT' | 'GUILD_VOICE' | 'GUILD_CATEGORY' | 'GUILD_NEWS' | 'GUILD_STORE'
-) => {
+) : Promise<MessageSelectOptionData[]> => {
   const Channels = await message.guild.channels.fetch();
-  const TextChannels: Choices[] = Channels.filter((channel) => channel.type == Type).map((channel) => {
+  const TextChannels: MessageSelectOptionData[] = Channels.filter((channel) => channel.type == Type).map((channel) => {
     return {
       label: channel.name,
       value: channel.id,
     };
   });
+
+  TextChannels.push({
+    label: 'None',
+    value: 'None',
+    emoji: '❌',	
+  });
+
   return TextChannels;
 };
 
-export const GetRoles = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>) => {
+export const GetRoles = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>) : Promise<MessageSelectOptionData[]> => {
   const roles = await message.guild.roles.fetch();
-  const List: Choices[] = [];
+  const List: MessageSelectOptionData[] = [];
   roles.map((role) => {
     if (role.name != '@everyone' && role.managed == false) {
-      List.push({
+      List.push({       
         label: role.name,
         value: role.id,
       });
@@ -72,6 +78,13 @@ export const GetRoles = async (message: Message | CommandInteraction | SelectMen
     if (a.label > b.label) return 1;
     return 0;
   });
+
+  List.push({
+    label: 'None',
+    value: 'None',
+    emoji: '❌',
+  })
+
   return List;
 };
 
@@ -82,7 +95,7 @@ export const GuildPrefix = async (message: Message) => {
   const data = await GuildSchema.findOne({ _id: GuildID });
 
   if (!data) {
-    await CreateSchema(message, GuildSchema);
+    await CreateSchema(GuildSchema, GuildID, GuildName);
 
     await GuildSchema.findOneAndUpdate(
       { _id: message.guildId },

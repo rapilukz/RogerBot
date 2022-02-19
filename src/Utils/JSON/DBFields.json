@@ -1,0 +1,26 @@
+{
+  "DBFields": {
+    "WelcomeSchema": {
+      "ChannelID": "ChannelID",
+      "ChannelName": "ChannelName"
+    },
+
+    "FarewellSchema": {
+      "ChannelID": "ChannelID",
+      "ChannelName": "ChannelName"
+    },
+
+    "GuildSchema": {
+      "DefaultRoleName": "DefaultRoleName",
+      "DefaultRoleID": "DefaultRoleID",
+      "AnnouncementType": "AnnouncementType"
+    },
+
+    "TwitchSchema": {
+      "ChannelID": "ChannelID",
+      "ChannelName": "ChannelName",
+      "NotificationsEnabled": "NotificationsEnabled",
+      "TwitchChannels": "TwitchChannels"
+    }
+  }
+}

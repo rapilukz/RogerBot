@@ -1,21 +1,4 @@
 {
   "prefix": "roger",
-  "DBFields": {
-    "WelcomeSchema": {
-      "ChannelID": "ChannelID",
-      "ChannelName": "ChannelName"
-    },
-    "FarewellSchema" : {
-      "ChannelID": "ChannelID",
-      "ChannelName": "ChannelName"
-    },  
-    "GuildSchema":{
-      "DefaultRoleName": "DefaultRoleName",
-      "DefaultRoleID": "DefaultRoleID",
-      "AnnouncementType": "AnnouncementType"
-
-    }
-
-  }
-  
+  "EnableTwitch": false
 }
