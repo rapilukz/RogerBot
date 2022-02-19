@@ -1,5 +1,5 @@
 import { Command } from '../../Interfaces'; 
-import { SEND_MESSAGES } from '../../Utils/Helpers/Permissions' ;
+import { SEND_MESSAGES } from '../../Utils/Permissions' ;
 
 export const command: Command = {
     name: 'ping',

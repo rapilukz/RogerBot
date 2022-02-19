@@ -1,6 +1,6 @@
 import { SlashCommand } from '../../Interfaces';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
+import { ADMINISTRATOR } from '../../Utils/Permissions';
 import {
   CacheType,
   CommandInteraction,
@@ -17,10 +17,9 @@ import GuildSchema from '../../Utils/Schemas/Guild';
 import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { BotMessageType, TypesOfMessage } from '../../Interfaces/Random';
 import { GetFromDB, SendoToDB } from '../../Utils/Helpers/MongoFunctions';
-import EmojiList from '../../Utils/Helpers/Classes/EmojiList';
+import { Emojis } from '../../Utils/Emojis.json';
 import Client from '../../Client';
 
-const emojis = new EmojiList();
 export const command: SlashCommand = {
   category: 'Admin',
   userPermissions: [ADMINISTRATOR],
@@ -210,7 +209,8 @@ const EnableTwitchNotification = async (interaction: CommandInteraction, client:
       .setPlaceholder('Enable/Disable Notifications')
       .addOptions(options)
   );
-  const TwitchIcon = emojis.getEmoji(client, emojis.TwitchBack);
+
+  const TwitchIcon = interaction.client.emojis.cache.get(Emojis.TwitchBack);
 
   await interaction.reply({
     components: [row],

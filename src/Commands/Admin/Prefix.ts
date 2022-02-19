@@ -1,5 +1,5 @@
 import { Command } from '../../Interfaces';
-import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
+import { ADMINISTRATOR } from '../../Utils/Permissions';
 import GuildSchema from '../../Utils/Schemas/Guild';
 import PrefixEmbed from '../../Utils/Embeds/Random/Prefix';
 import mongosse from 'mongoose';

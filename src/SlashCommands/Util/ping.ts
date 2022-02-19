@@ -1,6 +1,6 @@
 import { SlashCommand } from '../../Interfaces';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import * as Perms from '../../Utils/Helpers/Permissions'; 
+import * as Perms from '../../Utils/Permissions'; 
 import { CommandInteraction } from 'discord.js';
 
 export const command: SlashCommand = {
