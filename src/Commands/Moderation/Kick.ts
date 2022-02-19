@@ -1,5 +1,5 @@
 import { Command } from '../../Interfaces';
-import { KICK_MEMBERS } from '../../Utils/Permissions';
+import { KICK_MEMBERS } from '../../Utils/Helpers/Permissions';
 import { GuildMember } from 'discord.js';
 import { KickServerEmbed, SendKickEmbedDM } from '../../Utils/Embeds/Moderation/Kick';
 

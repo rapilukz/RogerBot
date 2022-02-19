@@ -50,6 +50,13 @@ export const GetChannels = async (
       value: channel.id,
     };
   });
+
+  TextChannels.push({
+    label: 'None',
+    value: 'None',
+    emoji: '❌',	
+  });
+
   return TextChannels;
 };
 
@@ -71,6 +78,13 @@ export const GetRoles = async (message: Message | CommandInteraction | SelectMen
     if (a.label > b.label) return 1;
     return 0;
   });
+
+  List.push({
+    label: 'None',
+    value: 'None',
+    emoji: '❌',
+  })
+
   return List;
 };
 

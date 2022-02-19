@@ -4,7 +4,7 @@ import ConfigJson from '../config.json';
 import Twitch from '../Utils/Schemas/Twitch';
 import { GetFromDB } from '../Utils/Helpers/MongoFunctions';
 import { EnableTwitch } from '../config.json';
-import { DBFields } from '../Utils/DBFields.json';
+import { DBFields } from '../Utils/JSON/DBFields.json';
 import { getToken } from '../Utils/Helpers/TwitchFunctions';
 
 export const event: Event = {

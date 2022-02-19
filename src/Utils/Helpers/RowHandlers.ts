@@ -2,10 +2,11 @@ import { SelectMenuInteraction, CacheType } from "discord.js";
 import { GetChannels, GetLabel, GetRoles } from "./Functions";
 import { SendoToDB } from "./MongoFunctions";
 import GuildSchema from "../Schemas/Guild";
-import { DBFields } from "../DBFields.json";
+import { DBFields } from "../JSON/DBFields.json";
 import WelcomeSchema from "../Schemas/Welcome";
 import FarewellSchema from "../Schemas/Farewell";
 import TwitchSchema from "../Schemas/Twitch";
+import { Emojis } from '../../Utils/JSON/Emojis.json';
 
 export const HandleAnnouncementType = async (interaction: SelectMenuInteraction<CacheType>) => {
     const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
@@ -125,13 +126,14 @@ export const HandleDefaultRole = async (interaction: SelectMenuInteraction<Cache
 export const HandleTwitchNotifications = async (interaction: SelectMenuInteraction<CacheType>) => {
     const guildId = interaction.guildId;
     const DBField = DBFields.TwitchSchema.NotificationsEnabled;
+    const TwitchIcon = interaction.client.emojis.cache.get(Emojis.TwitchBack);
     interaction.values.forEach(async (value) => {
       await SendoToDB(DBField, value, TwitchSchema, guildId);
-  
+      
       interaction.reply({
         embeds: [
           {
-            title: '📸 Twitch Notifications',
+            title: `${TwitchIcon} Twitch Notifications`,
             fields: [
               {
                 name: 'Notifications set to:',

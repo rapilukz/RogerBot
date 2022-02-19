@@ -1,6 +1,6 @@
 import { Command } from '../../Interfaces';
 import { Leaderboard } from '../../Interfaces/Random';
-import { SEND_MESSAGES, CREATE_INSTANT_INVITE } from '../../Utils/Permissions';
+import { SEND_MESSAGES, CREATE_INSTANT_INVITE } from '../../Utils/Helpers/Permissions';
 import LeaderboardEmbed from '../../Utils/Embeds/Random/TopInvite';
 
 export const command: Command = {

@@ -1,6 +1,6 @@
 import { SlashCommand } from '../../Interfaces';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { ADMINISTRATOR } from '../../Utils/Permissions';
+import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import {
   CacheType,
   CommandInteraction,
@@ -10,16 +10,15 @@ import {
   SelectMenuInteraction,
 } from 'discord.js';
 import { GetChannels, GetLabel, GetRoles } from '../../Utils/Helpers/Functions';
-import { DBFields } from '../../Utils/DBFields.json';
+import { DBFields } from '../../Utils/JSON/DBFields.json';
 import WelcomeSchema from '../../Utils/Schemas/Welcome';
 import FarewellSchema from '../../Utils/Schemas/Farewell';
 import GuildSchema from '../../Utils/Schemas/Guild';
 import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { BotMessageType, TypesOfMessage } from '../../Interfaces/Random';
-import { GetFromDB, SendoToDB } from '../../Utils/Helpers/MongoFunctions';
-import { Emojis } from '../../Utils/Emojis.json';
+import { GetFromDB } from '../../Utils/Helpers/MongoFunctions';
+import { Emojis } from '../../Utils/JSON/Emojis.json';
 import Client from '../../Client';
-
 export const command: SlashCommand = {
   category: 'Admin',
   userPermissions: [ADMINISTRATOR],
@@ -34,7 +33,7 @@ export const command: SlashCommand = {
           ['👋 Welcome Channel ', 'Welcome'],
           ['😠 Farewell Channel', 'Farewell'],
           ['✍️ Announcement Type ', 'Message'],
-          ['📷 Twitch Notifications ', 'Notifications'],
+          ['📷 Twitch Notifications ', 'EnableTwitchNotifications'],
           ['📜 Default Role ', 'Role'],
         ])
         .setDescription('Select an option')
@@ -56,9 +55,10 @@ export const command: SlashCommand = {
           case 'Message':
             AnnouncementType(interaction);
             break;
-          case 'Notifications':
-            EnableTwitchNotification(interaction, client);
+          case 'EnableTwitchNotifications':
+            EnableTwitchNotification(interaction,);
             break;
+          
           default:
             interaction.reply({ content: `Something went wrong!`, ephemeral: true });
         }
@@ -68,7 +68,7 @@ export const command: SlashCommand = {
 };
 
 /* AnnouncementType */
-const AnnouncementType= async (interaction: CommandInteraction) => {
+const AnnouncementType = async (interaction: CommandInteraction) => {
   const MessageTypes: BotMessageType[] = Object.values(TypesOfMessage);
   const List: MessageSelectOptionData[] = [];
   const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
@@ -185,7 +185,7 @@ const Role = async (interaction: CommandInteraction) => {
 };
 
 /* Enable Twitch Notifications */
-const EnableTwitchNotification = async (interaction: CommandInteraction, client: Client) => {
+const EnableTwitchNotification = async (interaction: CommandInteraction) => {
   const options: MessageSelectOptionData[] = [
     {
       label: 'Enable',
@@ -233,5 +233,6 @@ const EnableTwitchNotification = async (interaction: CommandInteraction, client:
   });
 };
 
-
-
+const TwitchNotificationChannel = async (interaction: CommandInteraction) => {
+   
+}

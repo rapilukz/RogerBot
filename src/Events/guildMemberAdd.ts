@@ -9,7 +9,7 @@ export const event: Event = {
   run: async (client, member: GuildMember) => {
     const GuildID = member.guild.id;
     const welcomeData = await WelcomeSchema.findOne({ _id: GuildID });
-    if (!welcomeData || welcomeData.WelcomeChannelID) return;
+    if (!welcomeData || !welcomeData.ChannelID || welcomeData.ChannelID == 'None') return;
     const WelcomeChannel = client.channels.cache.get(welcomeData.ChannelID) as any;
 
     // Checks if the guild has a default role set
