@@ -14,15 +14,18 @@ export const event: Event = {
 
     // Checks if the guild has a default role set
     const data = await GuildSchema.findOne({ _id: GuildID });
-    if (!data || data.DefaultRoleID) return;
+    if (!data) return;
 
     // Assigns the default role to the new member
-    const Role = member.guild.roles.cache.get(data.DefaultRoleID);
-    if (Role) member.roles.add(Role);
+    if (data.DefaultRoleID) {
+      const Role = member.guild.roles.cache.get(data.DefaultRoleID);
+      if (Role) member.roles.add(Role);
+    }
 
     const AnnouncementType = data.AnnouncementType;
     switch (AnnouncementType) {
       case 'text':
+        console.log(`${member.user.tag} has joined the server.`);
         return WelcomeChannel.send({ content: `${member} has joined the server! 🥳` });
       case 'embed':
         console.log('Embed');
@@ -32,7 +35,6 @@ export const event: Event = {
           files: [Banner],
           content: `${member} has joined the server! 🥳`,
         });
-
         return;
       default:
         console.log('Invalid announcement type');
