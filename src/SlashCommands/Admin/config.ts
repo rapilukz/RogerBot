@@ -14,11 +14,9 @@ import { DBFields } from '../../Utils/JSON/DBFields.json';
 import WelcomeSchema from '../../Utils/Schemas/Welcome';
 import FarewellSchema from '../../Utils/Schemas/Farewell';
 import GuildSchema from '../../Utils/Schemas/Guild';
-import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { BotMessageType, TypesOfMessage } from '../../Interfaces/Random';
 import { GetFromDB } from '../../Utils/Helpers/MongoFunctions';
-import { Emojis } from '../../Utils/JSON/Emojis.json';
-import Client from '../../Client';
+
 export const command: SlashCommand = {
   category: 'Admin',
   userPermissions: [ADMINISTRATOR],
@@ -33,8 +31,6 @@ export const command: SlashCommand = {
           ['👋 Welcome Channel ', 'Welcome'],
           ['😠 Farewell Channel', 'Farewell'],
           ['✍️ Announcement Type ', 'Message'],
-          ['📷 Twitch Notifications ', 'EnableTwitchNotifications'],
-          ['📺 Twitch Channel ', 'TwitchChannel'],
           ['📜 Default Role ', 'Role'],
         ])
         .setDescription('Select an option')
@@ -55,12 +51,6 @@ export const command: SlashCommand = {
             break;
           case 'Message':
             AnnouncementType(interaction);
-            break;
-          case 'EnableTwitchNotifications':
-            EnableTwitchNotification(interaction);
-            break;
-          case 'TwitchChannel':
-            TwitchChannel(interaction, Channels);
             break;
           default:
             interaction.reply({ content: `Something went wrong!`, ephemeral: true });
@@ -187,92 +177,3 @@ const Role = async (interaction: CommandInteraction) => {
   });
 };
 
-/* Enable Twitch Notifications */
-const EnableTwitchNotification = async (interaction: CommandInteraction) => {
-  const options: MessageSelectOptionData[] = [
-    {
-      label: 'Enable',
-      value: 'true',
-      emoji: '✅',
-    },
-    {
-      label: 'Disable',
-      value: 'false',
-      emoji: '❌',
-    },
-  ];
-  const guildId = interaction.guildId;
-  const guildName = interaction.guild.name;
-  const TwitchField = DBFields.TwitchSchema.NotificationsEnabled;
-
-  const CurrentState = await GetFromDB(TwitchField, TwitchSchema, guildId, guildName);
-  const row = new MessageActionRow().addComponents(
-    new MessageSelectMenu()
-      .setCustomId('TwitchNotifications')
-      .setPlaceholder('Enable/Disable Notifications')
-      .addOptions(options)
-  );
-
-  const TwitchIcon = interaction.client.emojis.cache.get(Emojis.TwitchBack);
-
-  await interaction.reply({
-    components: [row],
-    embeds: [
-      {
-        title: `${TwitchIcon} Twitch Notifications`,
-        fields: [
-          {
-            name: 'Current State:',
-            value: `${CurrentState == null ? '❌ **Disabled**' : ' ✅ **Enabled**'}`,
-          },
-        ],
-        thumbnail: {
-          url: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthisonlineworld.com%2Fwp-content%2Fuploads%2F2018%2F02%2Ftwitch-app-logo.jpg&f=1&nofb=1',
-        },
-        color: '#A077FF',
-      },
-    ],
-    ephemeral: true,
-  });
-};
-
-const TwitchChannel = async (
-  interaction: SelectMenuInteraction<CacheType> | CommandInteraction<CacheType>,
-  options: MessageSelectOptionData[]
-) => {
-  const TwitchIcon = interaction.client.emojis.cache.get(Emojis.TwitchBack);
-  const row = new MessageActionRow().addComponents(
-    new MessageSelectMenu()
-      .setCustomId('TwitchChannel')
-      .setPlaceholder(`Available Channels 📚`)
-      .addOptions(options)
-  );
-
-  const ChannelField = DBFields.TwitchSchema.ChannelName;
-  const guildId = interaction.guildId;
-  const guildName = interaction.guild.name;
-
-  const NotificationsEnabled = DBFields.TwitchSchema.NotificationsEnabled;
-  const isEnabled = await GetFromDB(NotificationsEnabled, TwitchSchema, guildId, guildName);
-
-  if (!isEnabled) {
-    return interaction.reply({
-      content: `${TwitchIcon} Twitch Notifications are **disabled**. Please enable them first with \`/config\``,
-      ephemeral: true,
-    });
-  }
-
-  const CurrentChannel = await GetFromDB(ChannelField, TwitchSchema, guildId, guildName);
-
-  await interaction.reply({
-    components: [row],
-    embeds: [
-      {
-        title: `${TwitchIcon} Twitch Notifications Channel`,
-        description: `Current Channel: ${CurrentChannel == null ? '\`None\`' : `\`${CurrentChannel}\``}`,
-        color: '#A077FF',
-      },
-    ],
-    ephemeral: true,
-  });
-};

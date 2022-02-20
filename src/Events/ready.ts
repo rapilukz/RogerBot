@@ -1,11 +1,10 @@
 import { Client } from 'discord.js';
 import { Event } from '../Interfaces';
 import ConfigJson from '../config.json';
-import Twitch from '../Utils/Schemas/Twitch';
+import Twitch from '../Utils/Classes/Twitch';
 import { GetFromDB } from '../Utils/Helpers/MongoFunctions';
 import { EnableTwitch } from '../config.json';
 import { DBFields } from '../Utils/JSON/DBFields.json';
-import { getToken } from '../Utils/Helpers/TwitchFunctions';
 
 export const event: Event = {
   name: 'ready',
@@ -37,8 +36,9 @@ export const event: Event = {
 
     //Check if twitch is enabled in the config.json so other developers can decide not to use the twitch integration
     if (EnableTwitch) {
-      let Token: string;
-      Token = await getToken();
+      const TwitchAPI = new Twitch( client );
+
+      /*
       const Delay = 5000;
       const DBField = DBFields.TwitchSchema.NotificationsEnabled;
 
@@ -50,7 +50,7 @@ export const event: Event = {
           const isEnabled = await GetFromDB(DBField, Twitch, guildId, guildName);
           if (isEnabled == null || !isEnabled) return;
         });
-      }, Delay); 
+      }, Delay);  */
     }
   },
 };
