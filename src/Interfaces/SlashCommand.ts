@@ -3,7 +3,7 @@ import Client from '../Client';
 import { CommandInteraction, PermissionResolvable } from 'discord.js';
 
 export interface Run {
-  (interaction: CommandInteraction, client: Client);
+  (interaction: CommandInteraction);
 }
 
 export interface SlashCommand {

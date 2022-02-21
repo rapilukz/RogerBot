@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, Message, SelectMenuInteraction } from 'discord.js';
+import TwitchSchema from '../Schemas/Twitch';
 import { Model } from 'mongoose';
 
 /**
@@ -14,14 +14,6 @@ export const SendoToDB = async (CollectionField: string, value: any, Schema: Mod
   } catch (error) {
     console.log(error);
   }
-};
-
-export const PushToDB = async (CollectionField: string, value: any, Schema: Model<any>, guildId: string) => {
-   try{
-     await Schema.updateOne({ _id: guildId }, { $push: { [CollectionField]: value } }, { upsert: true });
-   }catch (error) {
-     console.log(error);
-   }
 };
 
 export const CreateSchema = async (Schema: Model<any, any, any>, guildId: string, guildName: string) => {

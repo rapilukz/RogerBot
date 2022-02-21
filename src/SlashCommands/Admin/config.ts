@@ -35,7 +35,7 @@ export const command: SlashCommand = {
         ])
         .setDescription('Select an option')
     ),
-  run: async (interaction: CommandInteraction, client) => {
+  run: async (interaction: CommandInteraction) => {
     const Channels = await GetChannels(interaction, 'GUILD_TEXT');
     if (interaction.isAutocomplete) {
       interaction.options.data.forEach((option) => {
@@ -176,4 +176,3 @@ const Role = async (interaction: CommandInteraction) => {
     ephemeral: true,
   });
 };
-

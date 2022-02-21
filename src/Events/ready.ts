@@ -33,24 +33,9 @@ export const event: Event = {
       i++;
     }, 10000); // 10 seconds in ms
 
-
     //Check if twitch is enabled in the config.json so other developers can decide not to use the twitch integration
-    if (EnableTwitch) {
-      const TwitchAPI = new Twitch( client );
-
-      /*
-      const Delay = 5000;
-      const DBField = DBFields.TwitchSchema.NotificationsEnabled;
-
-      setInterval(() => {
-        client.guilds.cache.forEach(async (guild) => {
-          const guildId = guild.id;
-          const guildName = guild.name;
-
-          const isEnabled = await GetFromDB(DBField, Twitch, guildId, guildName);
-          if (isEnabled == null || !isEnabled) return;
-        });
-      }, Delay);  */
-    }
+   /*  if (EnableTwitch) {
+      const TwitchAPI = new Twitch(client);
+    } */
   },
 };

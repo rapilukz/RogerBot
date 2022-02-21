@@ -20,7 +20,7 @@ export const command: SlashCommand = {
         .setRequired(true)
         .addChoices([
           ['📷 Twitch Notifications ', 'EnableTwitchNotifications'],
-          ['📺 Twitch Channel ', 'TwitchChannel'],
+          ['📺 Notifications Channel ', 'TwitchChannel'],
         ])
         .setDescription('Select an option')
     ),
