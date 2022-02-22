@@ -5,7 +5,6 @@ export enum TypesOfMessage {
 }
 export type BotMessageType = `${TypesOfMessage}`;
 
-
 export interface TwitchChannel{
     _id: string;
     status: string;

@@ -15,7 +15,7 @@ class Twitch {
   private client_secret = process.env.CLIENT_SECRET;
   private Client: Client;
   public Delay: number = 60000; // 60 second delay
-  public MaxFollowerChannels: number = 10;
+  public MaxFollowedChannels: number = 10;
 
   constructor(client: Client) {
     this.Client = client;
@@ -54,6 +54,7 @@ class Twitch {
     return response.data.data[0];
   }
 
+
   public async CheckNotifications(interaction: CommandInteraction): Promise<boolean> {
     const Field = DBFields.TwitchSchema.NotificationsEnabled;
     const HasTwitch = await GetFromDB(Field, TwitchSchema, interaction.guildId, interaction.guild.name);
@@ -78,23 +79,38 @@ class Twitch {
         { _id: guildId },
         { $push:  { TwitchChannels: {
             $each: [{ _id: channel }],
-            $slice: -this.MaxFollowerChannels,
+            $slice: -this.MaxFollowedChannels,
         } } },
         { upsert: true }
       );
     } catch (error) {
+      interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
       console.log(error);
     }
   }
 
-  public async GetList(interaction: CommandInteraction) {
+  public async RemoveChannel(interaction: CommandInteraction, channel: string) {
+      const guildId = interaction.guildId;
+      try{
+        await TwitchSchema.updateOne(
+          { _id: guildId },
+          { $pull: { TwitchChannels: { _id: channel } } },
+          { upsert: true }
+        );
+      }catch (error) {
+        interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
+        console.log(error);
+      }
+  }
+
+  public async GetChannelsList(interaction: CommandInteraction): Promise<string[]> {
     const guildId = interaction.guildId;
     const field = DBFields.TwitchSchema.TwitchChannels;
 
     const TwitchChannels: any[] = await GetFromDB(field, TwitchSchema, guildId, interaction.guild.name);
 
-    const List: any[] = [];
-    TwitchChannels.map((channel: TwitchChannel) => {
+    const List: string[] = [];
+    TwitchChannels.forEach((channel: TwitchChannel) => {
         List.push(channel._id);
     });
 

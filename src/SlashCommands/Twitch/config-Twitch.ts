@@ -9,7 +9,7 @@ import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { DBFields } from '../../Utils/JSON/DBFields.json';
 
 export const command: SlashCommand = {
-    category: 'Admin',
+    category: 'Twitch',
     userPermissions: [ADMINISTRATOR],
     data: new SlashCommandBuilder() 
       .setName('config-twitch')

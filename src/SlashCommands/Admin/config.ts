@@ -62,7 +62,7 @@ export const command: SlashCommand = {
 
 /* AnnouncementType */
 const AnnouncementType = async (interaction: CommandInteraction) => {
-  const MessageTypes: BotMessageType[] = Object.values(TypesOfMessage);
+  const MessageTypes: BotMessageType[] = Object.values(TypesOfMessage);   //Sets the value of the enum to an array
   const List: MessageSelectOptionData[] = [];
   const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
 

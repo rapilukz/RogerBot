@@ -1,15 +1,15 @@
 import { SlashCommand } from '../../Interfaces';
-import { bold, hyperlink, SlashCommandBuilder } from '@discordjs/builders';
+import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { Emojis } from '../../Utils/JSON/Emojis.json';
 import Twitch from '../../Utils/Classes/Twitch';
 
 export const command: SlashCommand = {
-  category: 'Admin',
+  category: 'Twitch',
   userPermissions: [ADMINISTRATOR],
   data: new SlashCommandBuilder()
-    .setName('twitch-follow')
+    .setName('twitch-add')
     .setDescription('Add a Twitch channel to get notifications from. (by name)')
     .addStringOption((option) =>
       option
@@ -30,27 +30,28 @@ export const command: SlashCommand = {
       return interaction.reply({ content: `I'm sorry, no channel was found with that name 😢`, ephemeral: true });
     }
 
-    const ChannelsList = await TwitchAPI.GetList(interaction);
-    const username = data.display_name;
-    let ChannelCount = ChannelsList.length;
+    const ChannelsList: string[] = await TwitchAPI.GetChannelsList(interaction);
+    const username:string = data.display_name;
+    let ChannelCount:number = ChannelsList.length;
 
     // check if channel is already in the list
     if (ChannelsList.includes(username))
       return interaction.reply({ content: `You already have that channel added!`, ephemeral: true });
 
     // check if the the max amount of channels has been reached
-    if (ChannelCount >= TwitchAPI.MaxFollowerChannels) {
+    if (ChannelCount >= TwitchAPI.MaxFollowedChannels) {
       return interaction.reply({
         content: `You can only have ${bold(
-          TwitchAPI.MaxFollowerChannels.toString()
+          TwitchAPI.MaxFollowedChannels.toString()
         )} channels added at a time!\n Please use \`$/twitch-remove'\` before adding another.`,
         ephemeral: true,
       });
     }
 
+    //If everything is good, add the channel to the list
     TwitchAPI.AddChannel(interaction, username);
+   
     const URL = `https://twitch.tv/${username}`;
-
     const AddedToListEmbed = new MessageEmbed({
       title: username,
       color: 'GREEN',
@@ -61,7 +62,7 @@ export const command: SlashCommand = {
       fields: [
         {
           name: 'List Size',
-          value: `\`${ChannelCount + 1}/${TwitchAPI.MaxFollowerChannels}\``,
+          value: `\`${ChannelCount + 1}/${TwitchAPI.MaxFollowedChannels}\``,
           inline: true,
         },
         {

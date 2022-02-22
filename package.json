@@ -13,7 +13,7 @@
     "@discordjs/rest": "^0.1.0-canary.0",
     "ascii-table": "^0.0.9",
     "axios": "^0.25.0",
-    "discord-api-types": "^0.25.2",
+    "discord-api-types": "^0.27.2",
     "discord.js": "^13.6.0",
     "djs-buttons-pagination": "^1.6.2",
     "dotenv": "^10.0.0",
