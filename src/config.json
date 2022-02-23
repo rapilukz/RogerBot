@@ -1,4 +1,5 @@
 {
   "prefix": "roger",
-  "EnableTwitch": true
+  "EnableTwitch": true,
+  "TwitchToken": ""
 }
