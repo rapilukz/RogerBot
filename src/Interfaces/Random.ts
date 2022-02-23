@@ -13,3 +13,5 @@ export interface TwitchChannel{
 export interface Leaderboard {
     [name: string]: number;
 }
+
+export type Delay = 30000 | 60000;

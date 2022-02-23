@@ -6,20 +6,20 @@ import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
 import { bold } from '@discordjs/builders';
 import { TwitchChannel } from '../../Interfaces/Random';
+import {  Delay } from '../../Interfaces/Random';
 
 dotenv.config();
-
 class Twitch {
-  private authToken: Promise<String>;
+  private Token: Promise<String>;
   private client_id = process.env.CLIENT_ID;
   private client_secret = process.env.CLIENT_SECRET;
   private Client: Client;
-  public Delay: number = 60000; // 60 second delay
+  public Delay: Delay = 60000; // 60 second delay
   public MaxFollowedChannels: number = 10;
 
   constructor(client: Client) {
     this.Client = client;
-    this.authToken = this.getToken();
+    this.Token = this.getToken();
   }
 
   private async getToken(): Promise<string> {
@@ -37,7 +37,7 @@ class Twitch {
 
   public async getUsers(channel: string) {
     const url = process.env.GET_USERS_URL;
-    const token = await this.authToken;
+    const token = this.Token;
 
     const response = await axios.get(url, {
       headers: {
