@@ -15,7 +15,7 @@ export const command: SlashCommand = {
     const HasNotifications = await TwitchAPI.CheckNotifications(interaction);
     if (!HasNotifications) return;
 
-    const ChannelList: string[] = await TwitchAPI.GetChannelsList(interaction);
+    const ChannelList: string[] = await TwitchAPI.GetNamesList(interaction);
 
     const TwitchEmoji = interaction.client.emojis.cache.get(Emojis.TwitchBack);
     const Embed = new MessageEmbed({

@@ -30,7 +30,7 @@ export const command: SlashCommand = {
       return interaction.reply({ content: `I'm sorry, no channel was found with that name 😢`, ephemeral: true });
     }
 
-    const ChannelsList: string[] = await TwitchAPI.GetChannelsList(interaction);
+    const ChannelsList: string[] = await TwitchAPI.GetNamesList(interaction);
     const username:string = data.display_name;
     let ChannelCount:number = ChannelsList.length;
 

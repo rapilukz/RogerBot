@@ -20,7 +20,7 @@ export const command: SlashCommand = {
     if (!HasNotifications) return;
 
     const TwitchChannel = interaction.options.getString('channel');
-    const ChannelList: string[] = await TwitchAPI.GetChannelsList(interaction);
+    const ChannelList: string[] = await TwitchAPI.GetNamesList(interaction);
 
     if (!ChannelList.includes(TwitchChannel)) {
       return interaction.reply({

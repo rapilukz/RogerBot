@@ -14,4 +14,4 @@ export interface Leaderboard {
     [name: string]: number;
 }
 
-export type Delay = 30000 | 60000;
+export type Delay = 10000 | 20000 | 30000 | 60000 | 120000 | 180000 | 240000 | 300000 | 360000 | 600000 | 900000 | 1800000;

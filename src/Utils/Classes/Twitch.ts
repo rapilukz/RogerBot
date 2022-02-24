@@ -37,7 +37,7 @@ class Twitch {
 
   public async getUsers(channel: string) {
     const url = process.env.GET_USERS_URL;
-    const token = this.Token;
+    const token = await this.Token;
 
     const response = await axios.get(url, {
       headers: {
