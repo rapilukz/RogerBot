@@ -7,6 +7,7 @@ import { GetFromDB } from '../Helpers/MongoFunctions';
 import { bold } from '@discordjs/builders';
 import { TwitchChannel } from '../../Interfaces/Random';
 import {  Delay } from '../../Interfaces/Random';
+import { connection } from 'mongoose';
 
 dotenv.config();
 class Twitch {
@@ -103,7 +104,7 @@ class Twitch {
       }
   }
 
-  public async GetChannelsList(interaction: CommandInteraction): Promise<string[]> {
+  public async GetNamesList(interaction: CommandInteraction): Promise<string[]> {
     const guildId = interaction.guildId;
     const field = DBFields.TwitchSchema.TwitchChannels;
 
