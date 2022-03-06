@@ -10,7 +10,7 @@ export const command: SlashCommand = {
   category: 'Twitch',
   userPermissions: [ADMINISTRATOR],
   data: new SlashCommandBuilder()
-    .setName('twitch-add')
+    .setName('twitch-add-dev')
     .setDescription('Add a Twitch channel to get notifications from. (by name)')
     .addStringOption((option) =>
       option
@@ -21,8 +21,15 @@ export const command: SlashCommand = {
   run: async (interaction: CommandInteraction) => {
     const TwitchAPI = new Twitch(interaction.client);
 
-    const HasNotifications = await TwitchAPI.CheckNotifications(interaction);
-    if (!HasNotifications) return;
+    const HasNotifications = await TwitchAPI.CheckNotifications(interaction.guildId, interaction.guild.name);
+    if (!HasNotifications){
+      return interaction.reply({
+        content: `This server doesn't have Twitch notifications ${bold(
+          'enabled!'
+        )}\nPlease use \`/config-twitch\` to enable it. `,
+        ephemeral: true,
+      });
+    };
 
     const TwitchChannel = interaction.options.getString('channel');
     const data = await TwitchAPI.getUsers(TwitchChannel);

@@ -6,7 +6,7 @@ import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
 import { bold } from '@discordjs/builders';
 import { ChannelList, TwitchChannel } from '../../Interfaces/Random';
-import {  Delay } from '../../Interfaces/Random';
+import { Delay } from '../../Interfaces/Random';
 import { connection } from 'mongoose';
 
 dotenv.config();
@@ -55,20 +55,11 @@ class Twitch {
     return response.data.data[0];
   }
 
-
-  public async CheckNotifications(interaction: CommandInteraction): Promise<boolean> {
+  public async CheckNotifications(guildId: string, guildName: string): Promise<boolean> {
     const Field = DBFields.TwitchSchema.NotificationsEnabled;
-    const HasTwitch = await GetFromDB(Field, TwitchSchema, interaction.guildId, interaction.guild.name);
+    const HasTwitch = await GetFromDB(Field, TwitchSchema, guildId, guildName);
 
-    if (!HasTwitch) {
-      interaction.reply({
-        content: `This server doesn't have Twitch notifications ${bold(
-          'enabled!'
-        )}\nPlease use \`/config-twitch\` to enable it. `,
-        ephemeral: true,
-      });
-      return false;
-    }
+    if (!HasTwitch) return false;
 
     return true;
   }
@@ -78,10 +69,14 @@ class Twitch {
     try {
       await TwitchSchema.updateOne(
         { _id: guildId },
-        { $push:  { TwitchChannels: {
-            $each: [{ _id: channel }],
-            $slice: -this.MaxFollowedChannels,
-        } } },
+        {
+          $push: {
+            TwitchChannels: {
+              $each: [{ _id: channel }],
+              $slice: -this.MaxFollowedChannels,
+            },
+          },
+        },
         { upsert: true }
       );
     } catch (error) {
@@ -91,17 +86,13 @@ class Twitch {
   }
 
   public async RemoveChannel(interaction: CommandInteraction, channel: string) {
-      const guildId = interaction.guildId;
-      try{
-        await TwitchSchema.updateOne(
-          { _id: guildId },
-          { $pull: { TwitchChannels: { _id: channel } } },
-          { upsert: true }
-        );
-      }catch (error) {
-        interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-        console.log(error);
-      }
+    const guildId = interaction.guildId;
+    try {
+      await TwitchSchema.updateOne({ _id: guildId }, { $pull: { TwitchChannels: { _id: channel } } }, { upsert: true });
+    } catch (error) {
+      interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
+      console.log(error);
+    }
   }
 
   public async GetChannelsList(guildId: string, guildName: string): Promise<TwitchChannel[]> {
@@ -116,12 +107,11 @@ class Twitch {
     const Field = DBFields.TwitchSchema.NotificationsEnabled;
     const guildId = guild.id;
     const guildName = guild.name;
-    
+
     const HasTwitch = await GetFromDB(Field, TwitchSchema, guildId, guildName);
-    if(!HasTwitch) return;
+    if (!HasTwitch) return;
 
     const Channels: TwitchChannel[] = await this.GetChannelsList(guildId, guildName);
-    
   }
 }
 

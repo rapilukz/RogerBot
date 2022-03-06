@@ -1,5 +1,5 @@
 import { SlashCommand } from '../../Interfaces';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SEND_MESSAGES } from '../../Utils/Helpers/Permissions';
 import Twitch from '../../Utils/Classes/Twitch';
@@ -13,8 +13,15 @@ export const command: SlashCommand = {
   run: async (interaction: CommandInteraction) => {
     const TwitchAPI = new Twitch(interaction.client);
 
-    const HasNotifications = await TwitchAPI.CheckNotifications(interaction);
-    if (!HasNotifications) return;
+    const HasNotifications = await TwitchAPI.CheckNotifications(interaction.guildId, interaction.guild.name);
+    if (!HasNotifications){
+      return interaction.reply({
+        content: `This server doesn't have Twitch notifications ${bold(
+          'enabled!'
+        )}\nPlease use \`/config-twitch\` to enable it. `,
+        ephemeral: true,
+      });
+    };
 
     const ChannelList: TwitchChannel[] = await TwitchAPI.GetChannelsList(interaction.guildId, interaction.guild.name);
 
