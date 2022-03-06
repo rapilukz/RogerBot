@@ -10,7 +10,7 @@ export const command: SlashCommand = {
   category: 'Twitch',
   userPermissions: [ADMINISTRATOR],
   data: new SlashCommandBuilder()
-    .setName('twitch-add-dev')
+    .setName('twitch-add')
     .setDescription('Add a Twitch channel to get notifications from. (by name)')
     .addStringOption((option) =>
       option
