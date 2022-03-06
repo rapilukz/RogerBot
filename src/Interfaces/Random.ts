@@ -1,17 +1,56 @@
 export enum TypesOfMessage {
-    Text = 'text',
-    Embed = 'embed',
-    Banner = 'banner',
+  Text = 'text',
+  Embed = 'embed',
+  Banner = 'banner',
 }
 export type BotMessageType = `${TypesOfMessage}`;
 
-export interface TwitchChannel{
-    _id: string;
-    status: string;
+export interface TwitchChannel {
+  _id: string;
+  status: string;
 }
 
 export interface Leaderboard {
-    [name: string]: number;
+  [name: string]: number;
 }
 
-export type Delay = 10000 | 20000 | 30000 | 60000 | 120000 | 180000 | 240000 | 300000 | 360000 | 600000 | 900000 | 1800000;
+export interface ChannelList {
+  [name: TwitchChannel['_id']]: {
+    status: TwitchChannel['status'];
+    Guilds: string[];
+  };
+}
+
+export type Delay =
+  | 10000
+  | 20000
+  | 30000
+  | 60000
+  | 120000
+  | 180000
+  | 240000
+  | 300000
+  | 360000
+  | 600000
+  | 900000
+  | 1800000;
+
+export interface StreamData {
+  data: [
+    {
+      id: string;
+      user_id: string;
+      user_name: string;
+      game_id: string;
+      game_name: string;
+      type: string;
+      title: string;
+      viewer_count: number;
+      started_at: string;
+      language: string;
+      thumbnail_url: string;
+      tag_ids: string[];
+      is_mature: boolean;
+    }
+  ];
+}

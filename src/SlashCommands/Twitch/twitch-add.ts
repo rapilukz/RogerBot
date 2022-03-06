@@ -4,6 +4,7 @@ import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { Emojis } from '../../Utils/JSON/Emojis.json';
 import Twitch from '../../Utils/Classes/Twitch';
+import { TwitchChannel } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {
   category: 'Twitch',
@@ -30,13 +31,16 @@ export const command: SlashCommand = {
       return interaction.reply({ content: `I'm sorry, no channel was found with that name 😢`, ephemeral: true });
     }
 
-    const ChannelsList: string[] = await TwitchAPI.GetNamesList(interaction);
-    const username:string = data.display_name;
-    let ChannelCount:number = ChannelsList.length;
+    const ChannelsList: TwitchChannel[] = await TwitchAPI.GetChannelsList(interaction.guildId, interaction.guild.name);
+    // Check if the channel is already in the list
+
+    let ChannelCount: number = ChannelsList.length;
+    
+    const username: string = data.display_name;
+    const ChannelExists = ChannelsList.find((channel) => channel._id === username);
 
     // check if channel is already in the list
-    if (ChannelsList.includes(username))
-      return interaction.reply({ content: `You already have that channel added!`, ephemeral: true });
+    if (ChannelExists) return interaction.reply({ content: `You already have that channel added!`, ephemeral: true });
 
     // check if the the max amount of channels has been reached
     if (ChannelCount >= TwitchAPI.MaxFollowedChannels) {
@@ -50,7 +54,7 @@ export const command: SlashCommand = {
 
     //If everything is good, add the channel to the list
     TwitchAPI.AddChannel(interaction, username);
-   
+
     const URL = `https://twitch.tv/${username}`;
     const AddedToListEmbed = new MessageEmbed({
       title: username,

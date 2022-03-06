@@ -4,6 +4,7 @@ import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SEND_MESSAGES } from '../../Utils/Helpers/Permissions';
 import Twitch from '../../Utils/Classes/Twitch';
 import { Emojis } from '../../Utils/JSON/Emojis.json';
+import { TwitchChannel } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {
   category: 'Twitch',
@@ -15,13 +16,13 @@ export const command: SlashCommand = {
     const HasNotifications = await TwitchAPI.CheckNotifications(interaction);
     if (!HasNotifications) return;
 
-    const ChannelList: string[] = await TwitchAPI.GetNamesList(interaction);
+    const ChannelList: TwitchChannel[] = await TwitchAPI.GetChannelsList(interaction.guildId, interaction.guild.name);
 
     const TwitchEmoji = interaction.client.emojis.cache.get(Emojis.TwitchBack);
     const Embed = new MessageEmbed({
       title: `${TwitchEmoji}List of followed Twitch channels`,
       color: '#A077FF',
-      description: `\`${ChannelList.map((channel, index) => `${index + 1}.${channel}`).join('\n')}\``,
+      description: `\`${ChannelList.map((channel, index) => `${index + 1}.${channel._id}`).join('\n')}\``,
       fields: [
         {
           name: 'List Size',

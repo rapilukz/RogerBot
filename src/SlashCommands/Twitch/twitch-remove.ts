@@ -3,6 +3,7 @@ import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
 import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import Twitch from '../../Utils/Classes/Twitch';
+import { TwitchChannel } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {
   category: 'Twitch',
@@ -20,9 +21,10 @@ export const command: SlashCommand = {
     if (!HasNotifications) return;
 
     const TwitchChannel = interaction.options.getString('channel');
-    const ChannelList: string[] = await TwitchAPI.GetNamesList(interaction);
+    const ChannelList: TwitchChannel[] = await TwitchAPI.GetChannelsList(interaction.guildId, interaction.guild.name);
+    const ChannelExists = ChannelList.find((channel) => channel._id === TwitchChannel);
 
-    if (!ChannelList.includes(TwitchChannel)) {
+    if (!ChannelExists) {
       return interaction.reply({
         content: `${bold(
           TwitchChannel

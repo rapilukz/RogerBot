@@ -2,9 +2,7 @@ import { Client } from 'discord.js';
 import { Event } from '../Interfaces';
 import ConfigJson from '../config.json';
 import Twitch from '../Utils/Classes/Twitch';
-import { GetFromDB } from '../Utils/Helpers/MongoFunctions';
 import { EnableTwitch } from '../config.json';
-import { DBFields } from '../Utils/JSON/DBFields.json';
 
 export const event: Event = {
   name: 'ready',
@@ -34,8 +32,14 @@ export const event: Event = {
     }, 10000); // 10 seconds in ms
 
     //Check if twitch is enabled in the config.json so other developers can decide not to use the twitch integration
-   /*  if (EnableTwitch) {
+    if (EnableTwitch) {
       const TwitchAPI = new Twitch(client);
-    } */
+
+      setInterval(async () => {
+        client.guilds.cache.forEach(async (guild) => {
+          TwitchAPI.SendNotifications(guild);
+        });
+      }, TwitchAPI.Delay); // 60 seconds in ms
+    }
   },
 };
