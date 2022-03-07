@@ -5,7 +5,7 @@ import { DBFields } from '../../Utils/JSON/DBFields.json';
 import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
 import { bold } from '@discordjs/builders';
-import { ChannelList, TwitchChannel } from '../../Interfaces/Random';
+import { ChannelList, StreamData, TwitchChannel } from '../../Interfaces/Random';
 import { Delay } from '../../Interfaces/Random';
 import { connection } from 'mongoose';
 
@@ -14,12 +14,10 @@ class Twitch {
   private Token: Promise<String>;
   private client_id = process.env.CLIENT_ID;
   private client_secret = process.env.CLIENT_SECRET;
-  private Client: Client;
   public Delay: Delay = 60000; // 60 second delay
   public MaxFollowedChannels: number = 10;
 
-  constructor(client: Client) {
-    this.Client = client;
+  constructor() {
     this.Token = this.getToken();
   }
 
@@ -112,6 +110,26 @@ class Twitch {
     if (!HasTwitch) return;
 
     const Channels: TwitchChannel[] = await this.GetChannelsList(guildId, guildName);
+    const ChannelNames: string[] = Channels.map((channel) => channel._id);
+
+    const ChannelData: StreamData[] = await this.GetChannlesInfo(ChannelNames);
+
+  }
+
+  private async GetChannlesInfo(channels: string[]): Promise<StreamData[]> {
+    const url = process.env.GET_STREAMS_URL;
+    const token = await this.Token;
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Client-ID': this.client_id,
+      },
+      params: {
+        user_login: channels.join('&user_login='),
+      },
+    });
+    return response.data.data;
   }
 }
 
