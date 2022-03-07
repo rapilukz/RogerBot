@@ -6,6 +6,7 @@ import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
 import { StreamData, TwitchChannel } from '../../Interfaces/Random';
 import { Delay } from '../../Interfaces/Random';
+import qs from 'qs';
 
 dotenv.config();
 class Twitch {
@@ -116,24 +117,34 @@ class Twitch {
     const NotificationsChannel = await GetFromDB(NotifcationsChannelID, TwitchSchema, guildId, guildName);
     this.Client.channels.cache.get(NotificationsChannel) as any;
 
+    //The request is made to get the stream data of the channels
     const ChannelData: StreamData[] = await this.GetChannlesInfo(ChannelNames);
+    console.log(ChannelData);
   }
 
   private async GetChannlesInfo(channels: string[]): Promise<StreamData[]> {
     const url = process.env.GET_STREAMS_URL;
     const token = await this.Token;
 
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Client-ID': this.client_id,
-      },
-      params: {
-        user_login: channels.join('&user_login='),
-      },
-    });
-    return response.data.data;
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Client-ID': this.client_id,
+        },
+        params: {
+          user_login: channels,
+        },
+        paramsSerializer: (params) => {
+          return qs.stringify(params, { arrayFormat: 'repeat' });
+        }
+      });
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
+
 
 export default Twitch;

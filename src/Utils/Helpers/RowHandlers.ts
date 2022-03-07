@@ -168,7 +168,7 @@ export const HandleTwitchNotifications = async (interaction: SelectMenuInteracti
         embeds: [
           {
             title: `${TwitchIcon} Twitch Notification Channel`,
-            description: `Twitch Channel set to \`${Label}\` \n Use \`/addchannel\` to add a channel to the list`,
+            description: `Channel set to \`${Label}\` \n Use \`/twitch-add\` to follow a channel to the list`,
             color: 'GREEN',
             timestamp: new Date(),
             footer: {
