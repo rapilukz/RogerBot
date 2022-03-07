@@ -32,7 +32,7 @@ export const command: SlashCommand = {
     };
 
     const TwitchChannel = interaction.options.getString('channel');
-    const data = await TwitchAPI.getUsers(TwitchChannel);
+    const data = await TwitchAPI.getUser(TwitchChannel);
 
     if (!data) {
       return interaction.reply({ content: `I'm sorry, no channel was found with that name 😢`, ephemeral: true });

@@ -4,20 +4,20 @@ import axios from 'axios';
 import { DBFields } from '../../Utils/JSON/DBFields.json';
 import TwitchSchema from '../../Utils/Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
-import { bold } from '@discordjs/builders';
-import { ChannelList, StreamData, TwitchChannel } from '../../Interfaces/Random';
+import { StreamData, TwitchChannel } from '../../Interfaces/Random';
 import { Delay } from '../../Interfaces/Random';
-import { connection } from 'mongoose';
 
 dotenv.config();
 class Twitch {
   private Token: Promise<String>;
   private client_id = process.env.CLIENT_ID;
   private client_secret = process.env.CLIENT_SECRET;
+  private Client: Client;
   public Delay: Delay = 60000; // 60 second delay
   public MaxFollowedChannels: number = 10;
 
-  constructor() {
+  constructor(client: Client) {
+    this.Client = client;
     this.Token = this.getToken();
   }
 
@@ -34,7 +34,7 @@ class Twitch {
     return response.data.access_token;
   }
 
-  public async getUsers(channel: string) {
+  public async getUser(channel: string) {
     const url = process.env.GET_USERS_URL;
     const token = await this.Token;
 
@@ -102,18 +102,21 @@ class Twitch {
   }
 
   public async SendNotifications(guild: Guild) {
-    const Field = DBFields.TwitchSchema.NotificationsEnabled;
+    const NotificationsField = DBFields.TwitchSchema.NotificationsEnabled;
     const guildId = guild.id;
     const guildName = guild.name;
 
-    const HasTwitch = await GetFromDB(Field, TwitchSchema, guildId, guildName);
+    const HasTwitch = await GetFromDB(NotificationsField, TwitchSchema, guildId, guildName);
     if (!HasTwitch) return;
 
     const Channels: TwitchChannel[] = await this.GetChannelsList(guildId, guildName);
     const ChannelNames: string[] = Channels.map((channel) => channel._id);
 
-    const ChannelData: StreamData[] = await this.GetChannlesInfo(ChannelNames);
+    const NotifcationsChannelID = DBFields.TwitchSchema.ChannelID;
+    const NotificationsChannel = await GetFromDB(NotifcationsChannelID, TwitchSchema, guildId, guildName);
+    this.Client.channels.cache.get(NotificationsChannel) as any;
 
+    const ChannelData: StreamData[] = await this.GetChannlesInfo(ChannelNames);
   }
 
   private async GetChannlesInfo(channels: string[]): Promise<StreamData[]> {
