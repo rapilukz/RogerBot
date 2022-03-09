@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Guild } from 'discord.js';
+import { Client, CommandInteraction, Guild, MessageEmbed } from 'discord.js';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import { DBFields } from '../JSON/DBFields.json';
@@ -7,6 +7,7 @@ import { GetFromDB } from '../Helpers/MongoFunctions';
 import { StreamData, TwitchChannel, StreamStatus } from '../../Interfaces/Random';
 import { Delay } from '../../Interfaces/Random';
 import qs from 'qs';
+import { bold } from '@discordjs/builders';
 
 dotenv.config();
 class Twitch {
@@ -109,16 +110,13 @@ class Twitch {
     const HasTwitch = await this.CheckNotifications(guildId, guildName);
     if (!HasTwitch) return;
 
-    const Channels: TwitchChannel[] = await this.GetChannelsList(guildId, guildName); // Get channels list from DB
+    const ChannelsList: TwitchChannel[] = await this.GetChannelsList(guildId, guildName); // Get channels list from DB
 
-    const NotifcationsChannelID = DBFields.TwitchSchema.ChannelID;
-    const NotificationsChannel = await GetFromDB(NotifcationsChannelID, TwitchSchema, guildId, guildName); // Get notifications channel ID from DB
-
-    const ChannelNames: string[] = Channels.map((channel) => channel._id);
-    const StreamsInfo: StreamData[] = await this.GetChannlesInfo(ChannelNames); // makes request to twitch api to with the channel names from the array
+    const ChannelNames: string[] = ChannelsList.map((channel) => channel._id);
+    const StreamsInfo: StreamData[] = await this.GetChannelsInfo(ChannelNames); // makes request to twitch api to with the channel names from the array
 
     //find the streamer from ChannelNames that have no stream data
-    Channels.filter((channel) => {
+    ChannelsList.forEach((channel) => {
       const NoData = !StreamsInfo.find((stream) => stream.user_name === channel._id);
       if (NoData && channel.status == 'live') {
         this.UpdateChannelStatus(guildId, channel._id, 'offline');
@@ -126,17 +124,68 @@ class Twitch {
       return;
     });
 
-    /* StreamsInfo.forEach((stream) => {
-      const CurrentStatus = 'live';
+    const Field = DBFields.TwitchSchema.ChannelID;
+    const ChannelID = await GetFromDB(Field, TwitchSchema, guildId, guildName); // Get notifications channel ID from DB
+    const Channel = this.Client.channels.cache.get(ChannelID) as any;
 
-      console.log(`${stream.user_name} is online!`);
-    }); */
+    StreamsInfo.forEach((stream) => {
+      const WasOnline = ChannelsList.find((channel) => channel._id === stream.user_name && channel.status === 'live');
+
+      if (WasOnline) return;
+      this.UpdateChannelStatus(guildId, stream.user_name, 'live');
+      this.SendToChannel(stream, Channel);
+    });
   }
 
-  private async GetChannlesInfo(channelParams: string[]): Promise<StreamData[]> {
+  private async SendToChannel(streamData: StreamData, channel: any) {
+    const streamerUrl = `https://twitch.tv/${streamData.user_name}`;
+    const { profile_image_url } = await this.getUser(streamData.user_name);
+
+    const StreamerEmbed = new MessageEmbed({
+      title: streamData.title,
+      description: `[Watch Stream](${streamerUrl})`,
+      author: {
+        name: streamData.user_name + ' is now live on Twitch!',
+        url: streamerUrl,
+        iconURL: profile_image_url,
+      },
+      thumbnail: {
+        url: profile_image_url,
+      },
+      url: streamerUrl,
+      fields: [
+        {
+          name: `🎮 Playing:`,
+          value: `${bold(streamData.game_name)}`,
+          inline: true,
+        },
+        {
+          name: `👁 Viewer Count:`,
+          value: ` ${bold(streamData.viewer_count.toString())}`,
+          inline: true,
+        },
+        {
+          name: `🌎 Language:`,
+          value: `${bold(streamData.language.toUpperCase())}`,
+          inline: true,
+        },
+      ],
+      color: '#A077FF',
+      image: {
+        url: 'https://st1.bgr.in/wp-content/uploads/2020/09/Twitch-BGR-India.jpg',
+      },
+      footer: {
+        text: `@Twitch`,
+        iconURL: 'https://static.techspot.com/images2/downloads/topdownload/2021/04/2021-04-07-ts3_thumbs-373.png',
+      },
+      timestamp: new Date(),
+    });
+    channel.send({ content: `@everyone **${streamData.user_name} is now live!**`, embeds: [StreamerEmbed] });
+  }
+
+  private async GetChannelsInfo(channelParams: string[]): Promise<StreamData[]> {
     const url = process.env.GET_STREAMS_URL;
     const token = await this.Token;
-
     try {
       const response = await axios.get(url, {
         headers: {

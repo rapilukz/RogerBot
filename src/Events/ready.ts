@@ -32,14 +32,14 @@ export const event: Event = {
     }, 10000); // 10 seconds in ms
 
     //Check if twitch is enabled in the config.json so other developers can decide not to use the twitch integration
-    /* if (EnableTwitch) {
-      const TwitchAPI = new Twitch();
+    if (EnableTwitch) {
+      const TwitchAPI = new Twitch(client);
 
       setInterval(async () => {
         client.guilds.cache.forEach(async (guild) => {
           TwitchAPI.SendNotifications(guild);
         });
       }, TwitchAPI.Delay); // 60 seconds in ms
-    } */
+    }
   },
 };
