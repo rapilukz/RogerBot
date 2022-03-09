@@ -1,10 +1,10 @@
 import { Client, CommandInteraction, Guild } from 'discord.js';
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { DBFields } from '../../Utils/JSON/DBFields.json';
-import TwitchSchema from '../../Utils/Schemas/Twitch';
+import { DBFields } from '../JSON/DBFields.json';
+import TwitchSchema from '../Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
-import { StreamData, TwitchChannel } from '../../Interfaces/Random';
+import { StreamData, TwitchChannel, StreamStatus } from '../../Interfaces/Random';
 import { Delay } from '../../Interfaces/Random';
 import qs from 'qs';
 
@@ -103,26 +103,37 @@ class Twitch {
   }
 
   public async SendNotifications(guild: Guild) {
-    const NotificationsField = DBFields.TwitchSchema.NotificationsEnabled;
     const guildId = guild.id;
     const guildName = guild.name;
 
-    const HasTwitch = await GetFromDB(NotificationsField, TwitchSchema, guildId, guildName);
+    const HasTwitch = await this.CheckNotifications(guildId, guildName);
     if (!HasTwitch) return;
 
-    const Channels: TwitchChannel[] = await this.GetChannelsList(guildId, guildName);
-    const ChannelNames: string[] = Channels.map((channel) => channel._id);
+    const Channels: TwitchChannel[] = await this.GetChannelsList(guildId, guildName); // Get channels list from DB
 
     const NotifcationsChannelID = DBFields.TwitchSchema.ChannelID;
-    const NotificationsChannel = await GetFromDB(NotifcationsChannelID, TwitchSchema, guildId, guildName);
-    this.Client.channels.cache.get(NotificationsChannel) as any;
+    const NotificationsChannel = await GetFromDB(NotifcationsChannelID, TwitchSchema, guildId, guildName); // Get notifications channel ID from DB
 
-    //The request is made to get the stream data of the channels
-    const ChannelData: StreamData[] = await this.GetChannlesInfo(ChannelNames);
-    console.log(ChannelData);
+    const ChannelNames: string[] = Channels.map((channel) => channel._id);
+    const StreamsInfo: StreamData[] = await this.GetChannlesInfo(ChannelNames); // makes request to twitch api to with the channel names from the array
+
+    //find the streamer from ChannelNames that have no stream data
+    Channels.filter((channel) => {
+      const NoData = !StreamsInfo.find((stream) => stream.user_name === channel._id);
+      if (NoData && channel.status == 'live') {
+        this.UpdateChannelStatus(guildId, channel._id, 'offline');
+      }
+      return;
+    });
+
+    /* StreamsInfo.forEach((stream) => {
+      const CurrentStatus = 'live';
+
+      console.log(`${stream.user_name} is online!`);
+    }); */
   }
 
-  private async GetChannlesInfo(channels: string[]): Promise<StreamData[]> {
+  private async GetChannlesInfo(channelParams: string[]): Promise<StreamData[]> {
     const url = process.env.GET_STREAMS_URL;
     const token = await this.Token;
 
@@ -133,18 +144,35 @@ class Twitch {
           'Client-ID': this.client_id,
         },
         params: {
-          user_login: channels,
+          user_login: channelParams,
         },
         paramsSerializer: (params) => {
           return qs.stringify(params, { arrayFormat: 'repeat' });
-        }
+        },
       });
       return response.data.data;
     } catch (error) {
       console.log(error);
     }
   }
-}
 
+  private UpdateChannelStatus(guildId: string, channel_id: string, status: StreamStatus) {
+    TwitchSchema.findOneAndUpdate(
+      {
+        _id: guildId,
+        'TwitchChannels._id': channel_id,
+      },
+      {
+        $set: {
+          'TwitchChannels.$.status': status,
+        },
+      },
+      { upsert: true },
+      (err, doc) => {
+        if (err) console.log(err);
+      }
+    );
+  }
+}
 
 export default Twitch;

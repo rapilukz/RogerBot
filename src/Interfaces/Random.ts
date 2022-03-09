@@ -14,13 +14,6 @@ export interface Leaderboard {
   [name: string]: number;
 }
 
-export interface ChannelList {
-  [name: TwitchChannel['_id']]: {
-    status: TwitchChannel['status'];
-    Guilds: string[];
-  };
-}
-
 export type Delay =
   | 10000
   | 20000
@@ -34,6 +27,8 @@ export type Delay =
   | 600000
   | 900000
   | 1800000;
+
+export type StreamStatus = 'live' | 'offline';
 
 export interface StreamData {
   id: string;

@@ -3,7 +3,7 @@ import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { Emojis } from '../../Utils/JSON/Emojis.json';
-import Twitch from '../../Utils/Classes/Twitch';
+import Twitch from '../../Utils/APIs/Twitch';
 import { TwitchChannel } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {

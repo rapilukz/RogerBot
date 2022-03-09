@@ -2,7 +2,7 @@ import { SlashCommand } from '../../Interfaces';
 import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
 import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
-import Twitch from '../../Utils/Classes/Twitch';
+import Twitch from '../../Utils/APIs/Twitch';
 import { TwitchChannel } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {
