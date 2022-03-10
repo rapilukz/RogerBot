@@ -4,7 +4,7 @@ import axios from 'axios';
 import { DBFields } from '../JSON/DBFields.json';
 import TwitchSchema from '../Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
-import { StreamData, TwitchChannel, StreamStatus } from '../../Interfaces/Random';
+import { StreamData, TwitchChannel, StreamStatus, UserData } from '../../Interfaces/Random';
 import { Delay } from '../../Interfaces/Random';
 import qs from 'qs';
 import { bold } from '@discordjs/builders';
@@ -36,7 +36,7 @@ class Twitch {
     return response.data.access_token;
   }
 
-  public async getUser(channel: string) {
+  public async getUser(channel: string): Promise<UserData> {
     const url = process.env.GET_USERS_URL;
     const token = await this.Token;
 
@@ -50,7 +50,7 @@ class Twitch {
       },
     });
 
-    if (response.data.data.length === 0) return false;
+    if (response.data.data.length === 0) return;
 
     return response.data.data[0];
   }
@@ -66,33 +66,30 @@ class Twitch {
 
   public async AddChannel(interaction: CommandInteraction, channel: string) {
     const guildId = interaction.guildId;
-    try {
-      await TwitchSchema.updateOne(
-        { _id: guildId },
-        {
-          $push: {
-            TwitchChannels: {
-              $each: [{ _id: channel }],
-              $slice: -this.MaxFollowedChannels,
-            },
+    await TwitchSchema.updateOne(
+      { _id: guildId },
+      {
+        $push: {
+          TwitchChannels: {
+            $each: [{ _id: channel }],
+            $slice: -this.MaxFollowedChannels,
           },
         },
-        { upsert: true }
-      );
-    } catch (error) {
-      interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-      console.log(error);
-    }
+      },
+      { upsert: true },
+      (err, doc) => {
+        interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
+        console.log(err);
+      }
+    );
   }
 
   public async RemoveChannel(interaction: CommandInteraction, channel: string) {
     const guildId = interaction.guildId;
-    try {
-      await TwitchSchema.updateOne({ _id: guildId }, { $pull: { TwitchChannels: { _id: channel } } }, { upsert: true });
-    } catch (error) {
+    await TwitchSchema.updateOne({ _id: guildId }, { $pull: { TwitchChannels: { _id: channel } } }, { upsert: true }, (err, doc) => {
       interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-      console.log(error);
-    }
+      console.log(err); 
+    });
   }
 
   public async GetChannelsList(guildId: string, guildName: string): Promise<TwitchChannel[]> {

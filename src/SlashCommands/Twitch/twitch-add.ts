@@ -4,13 +4,13 @@ import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { Emojis } from '../../Utils/JSON/Emojis.json';
 import Twitch from '../../Utils/APIs/Twitch';
-import { TwitchChannel } from '../../Interfaces/Random';
+import { TwitchChannel, UserData } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {
   category: 'Twitch',
   userPermissions: [ADMINISTRATOR],
   data: new SlashCommandBuilder()
-    .setName('twitch-add')
+    .setName('twitch-add-dev')
     .setDescription('Add a Twitch channel to get notifications from. (by name)')
     .addStringOption((option) =>
       option
@@ -32,7 +32,7 @@ export const command: SlashCommand = {
     };
 
     const TwitchChannel = interaction.options.getString('channel');
-    const data = await TwitchAPI.getUser(TwitchChannel);
+    const data: UserData = await TwitchAPI.getUser(TwitchChannel);
 
     if (!data) {
       return interaction.reply({ content: `I'm sorry, no channel was found with that name 😢`, ephemeral: true });
