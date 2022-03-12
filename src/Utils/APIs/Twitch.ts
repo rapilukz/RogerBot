@@ -18,13 +18,18 @@ class Twitch {
   public Delay: Delay = 60000; // 60 second delay
   public MaxFollowedChannels: number = 10;
 
+  private GET_TOKEN_URL = 'https://id.twitch.tv/oauth2/token';
+  private GET_USERS_URL = 'https://api.twitch.tv/helix/users';
+  private GET_STREAMS_URL = 'https://api.twitch.tv/helix/streams';
+  private GET_FOLLOWERS_URL = 'https://api.twitch.tv/helix/users/follows';
+
   constructor(client: Client) {
     this.Client = client;
-    this.Token = this.getToken();
+    this.Token = this.GetToken();
   }
 
-  private async getToken(): Promise<string> {
-    const url = process.env.GET_TOKEN_URL;
+  private async GetToken(): Promise<string> {
+    const url = this.GET_TOKEN_URL;
     const grant_type = 'client_credentials';
 
     const response = await axios.post(url, {
@@ -36,8 +41,25 @@ class Twitch {
     return response.data.access_token;
   }
 
-  public async getUser(channel: string): Promise<UserData> {
-    const url = process.env.GET_USERS_URL;
+  public async GetFollowers(channelID: string): Promise<number> {
+    const url = this.GET_FOLLOWERS_URL;
+    const token = await this.Token;
+
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Client-ID': this.client_id,
+      },
+      params: {
+        to_id: channelID,
+      },
+    });
+
+    return response.data.total;
+  }
+
+  public async GetUser(channel: string): Promise<UserData> {
+    const url = this.GET_USERS_URL;
     const token = await this.Token;
 
     const response = await axios.get(url, {
@@ -86,10 +108,15 @@ class Twitch {
 
   public async RemoveChannel(interaction: CommandInteraction, channel: string) {
     const guildId = interaction.guildId;
-    await TwitchSchema.updateOne({ _id: guildId }, { $pull: { TwitchChannels: { _id: channel } } }, { upsert: true }, (err, doc) => {
-      interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-      console.log(err); 
-    });
+    await TwitchSchema.updateOne(
+      { _id: guildId },
+      { $pull: { TwitchChannels: { _id: channel } } },
+      { upsert: true },
+      (err, doc) => {
+        interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
+        console.log(err);
+      }
+    );
   }
 
   public async GetChannelsList(guildId: string, guildName: string): Promise<TwitchChannel[]> {
@@ -136,7 +163,7 @@ class Twitch {
 
   private async SendToChannel(streamData: StreamData, channel: any) {
     const streamerUrl = `https://twitch.tv/${streamData.user_name}`;
-    const { profile_image_url } = await this.getUser(streamData.user_name);
+    const { profile_image_url } = await this.GetUser(streamData.user_name);
 
     const StreamerEmbed = new MessageEmbed({
       title: streamData.title,
@@ -181,7 +208,7 @@ class Twitch {
   }
 
   private async GetChannelsInfo(channelParams: string[]): Promise<StreamData[]> {
-    const url = process.env.GET_STREAMS_URL;
+    const url = this.GET_STREAMS_URL;
     const token = await this.Token;
     try {
       const response = await axios.get(url, {
