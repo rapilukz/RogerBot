@@ -88,39 +88,31 @@ class Twitch {
 
   public async AddChannel(interaction: CommandInteraction, channel: string) {
     const guildId = interaction.guildId;
-    await TwitchSchema.updateOne(
-      { _id: guildId },
-      {
-        $push: {
-          TwitchChannels: {
-            $each: [{ _id: channel }],
-            $slice: -this.MaxFollowedChannels,
+    try {
+      await TwitchSchema.updateOne(
+        { _id: guildId },
+        {
+          $push: {
+            TwitchChannels: {
+              $each: [{ _id: channel }],
+              $slice: -this.MaxFollowedChannels,
+            },
           },
         },
-      },
-      { upsert: true },
-      (err, doc) => {
-        if(err){
-          interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-          console.log(err);
-        }
-      }
-    );
+        { upsert: true }
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public async RemoveChannel(interaction: CommandInteraction, channel: string) {
     const guildId = interaction.guildId;
-    await TwitchSchema.updateOne(
-      { _id: guildId },
-      { $pull: { TwitchChannels: { _id: channel } } },
-      { upsert: true },
-      (err, doc) => {
-        if(err){
-          interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-          console.log(err);
-        }
-      }
-    );
+    try {
+      await TwitchSchema.updateOne({ _id: guildId }, { $pull: { TwitchChannels: { _id: channel } } }, { upsert: true });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public async GetChannelsList(guildId: string, guildName: string): Promise<TwitchChannel[]> {
