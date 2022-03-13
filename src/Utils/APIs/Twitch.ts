@@ -100,8 +100,10 @@ class Twitch {
       },
       { upsert: true },
       (err, doc) => {
-        interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-        console.log(err);
+        if(err){
+          interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
+          console.log(err);
+        }
       }
     );
   }
@@ -113,8 +115,10 @@ class Twitch {
       { $pull: { TwitchChannels: { _id: channel } } },
       { upsert: true },
       (err, doc) => {
-        interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
-        console.log(err);
+        if(err){
+          interaction.reply({ content: `Something went wrong, please try later!`, ephemeral: true });
+          console.log(err);
+        }
       }
     );
   }
