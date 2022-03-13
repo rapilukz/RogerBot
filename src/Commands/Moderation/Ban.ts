@@ -18,10 +18,9 @@ export const command: Command = {
     if (!target.bannable) return message.channel.send('I cannot ban this user');
 
 
-    await target.send({ embeds: [SendBanEmbedDM(client, message, reason)] });
+    await target.send({ embeds: [SendBanEmbedDM(client, message, reason)] }).catch((error) => {});
     await target
       .ban({
-        days: 7,
         reason: reason,
       })
       .then(() => {
