@@ -62,7 +62,7 @@ export const command: SlashCommand = {
             { name: 'Reason', value: `\`${reason}\`` },
             { name: 'Banned By', value: `\`${sentBy}\`` },
           ],
-          thumbnail: { url: interaction.guild.iconURL({ format: 'png', dynamic: true, size: 1024 }) },
+          thumbnail: { url: target.user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 }) },
           color: `#FF0000`,
         },
       ],

@@ -11,7 +11,6 @@ import {
 } from 'discord.js';
 import Client from '../../Client';
 import fetch from 'node-fetch';
-import RoastEmbed from '../Embeds/Random/roast';
 import GuildSchema from '../Schemas/Guild';
 import { prefix as GlobalPrefix } from '../../config.json';
 import Canvas from 'canvas';
@@ -31,9 +30,20 @@ export const GetInsult = async () => {
 export const roast = async (user: User, client: Client, message: Message) => {
   const Insult = await GetInsult();
   const Delay = 2000;
+
+  const RoastEmbed = client.embed(
+    {
+      title: `\`${user.tag}\` is about to get roasted!`,
+      description: `${Insult}`,
+      thumbnail: { url: user.displayAvatarURL({ format: 'png', dynamic: true }) },
+      color: `RANDOM`,
+    },
+    message
+  );
+
   message.channel.send(`Finding a way to roast ${user}...`).then(async (msg) => {
     setTimeout(() => {
-      message.channel.send({ embeds: [RoastEmbed(client, message, user, Insult)] });
+      message.channel.send({ embeds: [RoastEmbed] });
       msg.delete();
     }, Delay);
   });
@@ -42,7 +52,7 @@ export const roast = async (user: User, client: Client, message: Message) => {
 export const GetChannels = async (
   message: Message | CommandInteraction | SelectMenuInteraction<CacheType>,
   Type: 'GUILD_TEXT' | 'GUILD_VOICE' | 'GUILD_CATEGORY' | 'GUILD_NEWS' | 'GUILD_STORE'
-) : Promise<MessageSelectOptionData[]> => {
+): Promise<MessageSelectOptionData[]> => {
   const Channels = await message.guild.channels.fetch();
   const TextChannels: MessageSelectOptionData[] = Channels.filter((channel) => channel.type == Type).map((channel) => {
     return {
@@ -54,18 +64,20 @@ export const GetChannels = async (
   TextChannels.push({
     label: 'None',
     value: 'None',
-    emoji: '❌',	
+    emoji: '❌',
   });
 
   return TextChannels;
 };
 
-export const GetRoles = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>) : Promise<MessageSelectOptionData[]> => {
+export const GetRoles = async (
+  message: Message | CommandInteraction | SelectMenuInteraction<CacheType>
+): Promise<MessageSelectOptionData[]> => {
   const roles = await message.guild.roles.fetch();
   const List: MessageSelectOptionData[] = [];
   roles.map((role) => {
     if (role.name != '@everyone' && role.managed == false) {
-      List.push({       
+      List.push({
         label: role.name,
         value: role.id,
       });
@@ -83,7 +95,7 @@ export const GetRoles = async (message: Message | CommandInteraction | SelectMen
     label: 'None',
     value: 'None',
     emoji: '❌',
-  })
+  });
 
   return List;
 };
@@ -120,27 +132,27 @@ export const GetLabel = (options: MessageSelectOptionData[] | MessageSelectOptio
   return label;
 };
 
-//Depression was inveted here 
+//Depression was inveted here
 export const CreateBanner = async (member: GuildMember) => {
   /* const Image = await GetFromDB() */
 
   const av = {
-    size: 128 as AllowedImageSize, //258 
+    size: 128 as AllowedImageSize, //258
     x: 280,
     y: 15,
-  }
+  };
 
   const dim = {
     height: 250,
     width: 700,
     margin: 180,
-  }
+  };
 
   let username = member.user.username;
   let discriminator = member.user.discriminator;
   let avatar = member.user.displayAvatarURL({ format: 'png', dynamic: true, size: av.size });
   const background = path.join(__dirname, '../../Content/background.png');
-  
+
   const canvas = Canvas.createCanvas(dim.width, dim.height);
   const ctx = canvas.getContext('2d');
   //draws the background
@@ -168,7 +180,6 @@ export const CreateBanner = async (member: GuildMember) => {
 
   ctx.font = '26px sans-serif';
   ctx.fillText(`Member #${member.guild.memberCount}`, dim.width / 2, dim.margin + 35);
-
 
   const attachment = new MessageAttachment(canvas.toBuffer());
 

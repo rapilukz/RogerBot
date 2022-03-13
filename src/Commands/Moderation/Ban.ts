@@ -1,7 +1,6 @@
 import { Command } from '../../Interfaces';
 import { BAN_MEMBERS } from '../../Utils/Helpers/Permissions';
 import { GuildMember } from 'discord.js';
-import { BanServerEmbed, SendBanEmbedDM } from '../../Utils/Embeds/Moderation/Ban';
 
 export const command: Command = {
   name: 'ban',
@@ -17,14 +16,39 @@ export const command: Command = {
     if (!reason) reason = 'No reason provided';
     if (!target.bannable) return message.channel.send('I cannot ban this user');
 
+    const DMEmbed = client.embed(
+      {
+        title: `\`${target.user.tag}\` has been banned!`,
+        fields: [
+          { name: 'Reason', value: `\`${reason}\`` },
+          { name: 'Banned By', value: `\`${message.author.tag}\`` },
+        ],
+        thumbnail: { url: target.user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 }) },
+        color: `#FF0000`,
+      },
+      message
+    );
 
-    await target.send({ embeds: [SendBanEmbedDM(client, message, reason)] }).catch((error) => {});
+    await target.send({ embeds: [DMEmbed] }).catch((error) => {});
+
+    const ServerEmbed = client.embed(
+      {
+        title: `You have been banned from \`${message.guild.name}\`!`,
+        fields: [
+          { name: 'Reason', value: `\`${reason}\`` },
+          { name: 'Banned By', value: `\`${message.author.tag}\`` },
+        ],
+        thumbnail: { url: message.guild.iconURL({ format: 'png', dynamic: true, size: 1024 }) },
+        color: `#FF0000`,
+      },
+      message
+    );
     await target
       .ban({
         reason: reason,
       })
       .then(() => {
-        message.channel.send({ embeds: [BanServerEmbed(client, message, reason, target)] });
+        message.channel.send({ embeds: [ServerEmbed] });
       });
   },
 };
