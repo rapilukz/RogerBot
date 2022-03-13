@@ -4,7 +4,6 @@ import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SEND_MESSAGES } from '../../Utils/Helpers/Permissions';
 import Twitch from '../../Utils/APIs/Twitch';
 import { UserData } from '../../Interfaces/Random';
-import { Emojis } from '../../Utils/JSON/Emojis.json';
 
 export const command: SlashCommand = {
   category: 'Twitch',
@@ -26,8 +25,7 @@ export const command: SlashCommand = {
     }
 
     const Followers = await twitch.GetFollowers(data.id);
-    
-    const FollowersIcon = interaction.client.emojis.cache.get(Emojis.TwitchFollowers)
+
     const url = `https://www.twitch.tv/${data.display_name}`;
     const embed = new MessageEmbed({
       title: `${data.display_name}`,
@@ -38,7 +36,7 @@ export const command: SlashCommand = {
       },
       fields: [
         {
-          name:  `${FollowersIcon} **Followers**`,
+          name:  `💬 **Followers**`,
           value: `${Followers}`,
           inline: true,
         },
