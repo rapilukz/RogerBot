@@ -150,7 +150,6 @@ class Twitch {
 
     StreamsInfo.forEach((stream) => {
       const WasOnline = ChannelsList.find((channel) => channel._id === stream.user_name && channel.status === 'live');
-
       if (WasOnline) return;
       this.UpdateChannelStatus(guildId, stream.user_name, 'live');
       this.SendToChannel(stream, Channel);
@@ -225,23 +224,22 @@ class Twitch {
     }
   }
 
-  private UpdateChannelStatus(guildId: string, channel_id: string, status: StreamStatus) {
-    try{
-      TwitchSchema.findOneAndUpdate(
-        {
-          _id: guildId,
-          'TwitchChannels._id': channel_id,
+  private UpdateChannelStatus(guildId: string, channel_name: string, status: StreamStatus) {
+    TwitchSchema.findOneAndUpdate(
+      {
+        _id: guildId,
+        'TwitchChannels._id': channel_name,
+      },
+      {
+        $set: {
+          'TwitchChannels.$.status': status,
         },
-        {
-          $set: {
-            'TwitchChannels.$.status': status,
-          },
-        },
-        { upsert: true },
-      );
-    }catch(error){
-      console.log(error);
-    }
+      },
+      { upsert: true },
+      (err, doc) => {
+        if (err) console.log(err);
+      }
+    );
   }
 }
 
