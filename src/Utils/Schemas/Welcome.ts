@@ -13,8 +13,7 @@ const WelcomeSchema = new Schema({
     ChannelID: String,
     ChannelName: String,
 
-    Text: String,
-    Embed: JSON,   
+    Text: String, 
 })
 
 export default model('Welcome-Schemas', WelcomeSchema);

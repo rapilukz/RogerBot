@@ -1,7 +1,6 @@
 import { Command } from '../../Interfaces';
 import { KICK_MEMBERS } from '../../Utils/Helpers/Permissions';
 import { GuildMember } from 'discord.js';
-import { KickServerEmbed, SendKickEmbedDM } from '../../Utils/Embeds/Moderation/Kick';
 
 export const command: Command = {
   name: 'kick',
@@ -17,15 +16,35 @@ export const command: Command = {
     if (!reason) reason = 'No reason provided';
     if (!target.kickable) return message.channel.send('I cannot kick this user');
 
+    const DmEmbed = client.embed(
+      {
+        title: `\`${target.user.tag}\` has been kicked!`,
+        fields: [
+          { name: 'Reason', value: `\`${reason}\`` },
+          { name: 'Kick By', value: `\`${message.author.tag}\`` },
+        ],
+        thumbnail: { url: target.user.displayAvatarURL({ format: 'png', dynamic: true, size: 1024 }) },
+        color: `#FF0000`,
+      },
+      message
+    );
 
-    await target.send({ embeds: [SendKickEmbedDM(client, message, reason)] });
-    await target
-      .ban({
-        days: 7,
-        reason: reason,
-      })
-      .then(() => {
-        message.channel.send({ embeds: [KickServerEmbed(client, message, reason, target)] });
-      });
+    const ServerEmbed = client.embed(
+      {
+        title: `You have been kicked from \`${message.guild.name}\`!`,
+        fields: [
+          { name: 'Reason', value: `\`${reason}\`` },
+          { name: 'Kicked By', value: `\`${message.author.tag}\`` },
+        ],
+        thumbnail: { url: message.guild.iconURL({ format: 'png', dynamic: true, size: 1024 }) },
+        color: `#FF0000`,
+      },
+      message
+    );
+
+    await target.send({ embeds: [DmEmbed] });
+    await target.kick().then(() => {
+      message.channel.send({ embeds: [ServerEmbed] });
+    });
   },
 };

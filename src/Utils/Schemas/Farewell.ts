@@ -13,8 +13,7 @@ const FarewellSchema = new Schema({
     ChannelID: String,
     ChannelName: String,
     
-    Text: String,
-    Embed: JSON,   
+    Text: String,  
 })
 
 export default model('Farewell-Schemas', FarewellSchema);

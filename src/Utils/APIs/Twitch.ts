@@ -226,21 +226,22 @@ class Twitch {
   }
 
   private UpdateChannelStatus(guildId: string, channel_id: string, status: StreamStatus) {
-    TwitchSchema.findOneAndUpdate(
-      {
-        _id: guildId,
-        'TwitchChannels._id': channel_id,
-      },
-      {
-        $set: {
-          'TwitchChannels.$.status': status,
+    try{
+      TwitchSchema.findOneAndUpdate(
+        {
+          _id: guildId,
+          'TwitchChannels._id': channel_id,
         },
-      },
-      { upsert: true },
-      (err, doc) => {
-        if (err) console.log(err);
-      }
-    );
+        {
+          $set: {
+            'TwitchChannels.$.status': status,
+          },
+        },
+        { upsert: true },
+      );
+    }catch(error){
+      console.log(error);
+    }
   }
 }
 
