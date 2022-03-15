@@ -11,7 +11,6 @@ const FarewellSchema = new Schema({
     Guild: RequiredString,
    
     ChannelID: String,
-    ChannelName: String,
     
     Text: String,  
 })

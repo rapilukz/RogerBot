@@ -6,8 +6,8 @@
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only --poll ./src/index.ts"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "rapilukz",
+  "license": "GPL 2.0",
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
     "@discordjs/rest": "^0.3.0",

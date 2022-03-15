@@ -151,6 +151,7 @@ class Twitch {
     StreamsInfo.forEach((stream) => {
       const WasOnline = ChannelsList.find((channel) => channel._id === stream.user_name && channel.status === 'live');
       if (WasOnline) return;
+      console.log(`${stream.user_name} is live`);
       this.UpdateChannelStatus(guildId, stream.user_name, 'live');
       this.SendToChannel(stream, Channel);
     });
@@ -176,11 +177,6 @@ class Twitch {
         {
           name: `🎮 Playing:`,
           value: `${bold(streamData.game_name)}`,
-          inline: true,
-        },
-        {
-          name: `👁 Viewer Count:`,
-          value: ` ${bold(streamData.viewer_count.toString())}`,
           inline: true,
         },
         {

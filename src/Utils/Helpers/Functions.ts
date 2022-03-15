@@ -122,14 +122,18 @@ export const GuildPrefix = async (message: Message) => {
   return prefix;
 };
 
-export const GetLabel = (options: MessageSelectOptionData[] | MessageSelectOptionData[][], value: string) => {
-  let label = '';
-  options.forEach((option) => {
-    if (option.value === value) {
-      label = option.label;
-    }
-  });
-  return label;
+export const GetChannelsByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, channelId: string): Promise<string> => {
+  const Channel = message.guild.channels.cache.find((channel) => channel.id === channelId);
+  if (!Channel) return null;
+
+  return Channel.name;
+};
+
+export const GetRolesByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, roleID: string): Promise<string> => {
+  const Role = message.guild.roles.cache.find((role) => role.id === roleID);
+  if (!Role) return null;
+
+  return Role.name;
 };
 
 //Depression was inveted here

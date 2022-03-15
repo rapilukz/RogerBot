@@ -1,5 +1,5 @@
 import { SlashCommand } from '../../Interfaces';
-import { bold, SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import {
   CacheType,
@@ -9,7 +9,7 @@ import {
   MessageSelectOptionData,
   SelectMenuInteraction,
 } from 'discord.js';
-import { GetChannels, GetLabel, GetRoles } from '../../Utils/Helpers/Functions';
+import { GetChannels, GetChannelsByID, GetRoles } from '../../Utils/Helpers/Functions';
 import { DBFields } from '../../Utils/JSON/DBFields.json';
 import WelcomeSchema from '../../Utils/Schemas/Welcome';
 import FarewellSchema from '../../Utils/Schemas/Farewell';
@@ -62,7 +62,7 @@ export const command: SlashCommand = {
 
 /* AnnouncementType */
 const AnnouncementType = async (interaction: CommandInteraction) => {
-  const MessageTypes: BotMessageType[] = Object.values(TypesOfMessage);   //Sets the value of the enum to an array
+  const MessageTypes: BotMessageType[] = Object.values(TypesOfMessage); //Sets the value of the enum to an array
   const List: MessageSelectOptionData[] = [];
   const AnnouncementField = DBFields.GuildSchema.AnnouncementType;
 
@@ -105,11 +105,12 @@ const Welcome = async (
     new MessageSelectMenu().setCustomId('WelcomeChannel').setPlaceholder('Available Channels 📚').addOptions(options)
   );
 
-  const ChannelField = DBFields.WelcomeSchema.ChannelName;
+  const ChannelField = DBFields.WelcomeSchema.ChannelID;
   const guildId = interaction.guildId;
   const guildName = interaction.guild.name;
 
-  const CurrentChannel = await GetFromDB(ChannelField, WelcomeSchema, guildId, guildName);
+  const ChannelID = await GetFromDB(ChannelField, WelcomeSchema, guildId, guildName);
+  const CurrentChannel = await GetChannelsByID(interaction, ChannelID);
 
   await interaction.reply({
     components: [row],
@@ -133,10 +134,11 @@ const Farewell = async (
     new MessageSelectMenu().setCustomId('FarewellChannel').setPlaceholder('Available Channels 📚').addOptions(options)
   );
 
-  const ChannelField = DBFields.FarewellSchema.ChannelName;
+  const ChannelField = DBFields.FarewellSchema.ChannelID;
   const guildId = interaction.guildId;
   const guildName = interaction.guild.name;
-  const CurrentChannel = await GetFromDB(ChannelField, FarewellSchema, guildId, guildName);
+  const ChannelID = await GetFromDB(ChannelField, FarewellSchema, guildId, guildName);
+  const CurrentChannel = await GetChannelsByID(interaction, ChannelID);
 
   await interaction.reply({
     components: [row],

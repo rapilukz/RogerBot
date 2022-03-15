@@ -1,13 +1,11 @@
 {
   "DBFields": {
     "WelcomeSchema": {
-      "ChannelID": "ChannelID",
-      "ChannelName": "ChannelName"
+      "ChannelID": "ChannelID"
     },
 
     "FarewellSchema": {
-      "ChannelID": "ChannelID",
-      "ChannelName": "ChannelName"
+      "ChannelID": "ChannelID"
     },
 
     "GuildSchema": {
@@ -18,7 +16,6 @@
 
     "TwitchSchema": {
       "ChannelID": "ChannelID",
-      "ChannelName": "ChannelName",
       "NotificationsEnabled": "NotificationsEnabled",
       "TwitchChannels": "TwitchChannels"
     }

@@ -11,7 +11,6 @@ const WelcomeSchema = new Schema({
     Guild: RequiredString,
    
     ChannelID: String,
-    ChannelName: String,
 
     Text: String, 
 })

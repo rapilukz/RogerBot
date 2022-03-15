@@ -15,7 +15,6 @@ const TwitchSchema = new Schema({
     default: false,
   },
   ChannelID: String,
-  ChannelName: String,
   
   TwitchChannels: [
     {
