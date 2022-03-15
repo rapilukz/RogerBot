@@ -9,7 +9,7 @@ import {
   MessageSelectOptionData,
   SelectMenuInteraction,
 } from 'discord.js';
-import { GetChannels, GetChannelsByID, GetRoles } from '../../Utils/Helpers/Functions';
+import { GetChannels, GetChannelByID, GetRoles, GetRoleByID } from '../../Utils/Helpers/Functions';
 import { DBFields } from '../../Utils/JSON/DBFields.json';
 import WelcomeSchema from '../../Utils/Schemas/Welcome';
 import FarewellSchema from '../../Utils/Schemas/Farewell';
@@ -110,7 +110,7 @@ const Welcome = async (
   const guildName = interaction.guild.name;
 
   const ChannelID = await GetFromDB(ChannelField, WelcomeSchema, guildId, guildName);
-  const CurrentChannel = await GetChannelsByID(interaction, ChannelID);
+  const CurrentChannel = await GetChannelByID(interaction, ChannelID);
 
   await interaction.reply({
     components: [row],
@@ -138,7 +138,7 @@ const Farewell = async (
   const guildId = interaction.guildId;
   const guildName = interaction.guild.name;
   const ChannelID = await GetFromDB(ChannelField, FarewellSchema, guildId, guildName);
-  const CurrentChannel = await GetChannelsByID(interaction, ChannelID);
+  const CurrentChannel = await GetChannelByID(interaction, ChannelID);
 
   await interaction.reply({
     components: [row],
@@ -160,18 +160,20 @@ const Role = async (interaction: CommandInteraction) => {
     new MessageSelectMenu().setCustomId('Role').setPlaceholder('Available Roles 📚').addOptions(ListOfRoles)
   );
 
-  const RoleField = DBFields.GuildSchema.DefaultRoleName;
+  const RoleField = DBFields.GuildSchema.DefaultRoleID;
 
   const guildId = interaction.guildId;
   const guildName = interaction.guild.name;
-
-  const CurrentRole = await GetFromDB(RoleField, GuildSchema, guildId, guildName);
+ 
+  const RoleID = await GetFromDB(RoleField, GuildSchema, guildId, guildName);
+  const RoleName = await GetRoleByID(interaction, RoleID);
+  
   await interaction.reply({
     components: [row],
     embeds: [
       {
         title: '📚 Default Role',
-        description: `Default Role: \`${CurrentRole == null ? 'None' : CurrentRole}\``,
+        description: `Default Role: \`${RoleName == null ? 'None' : RoleName}\``,
         color: 'RANDOM',
       },
     ],

@@ -9,7 +9,6 @@
     },
 
     "GuildSchema": {
-      "DefaultRoleName": "DefaultRoleName",
       "DefaultRoleID": "DefaultRoleID",
       "AnnouncementType": "AnnouncementType"
     },

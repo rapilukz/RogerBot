@@ -1,13 +1,10 @@
 import { CommandInteraction } from 'discord.js';
 import { Event } from '../Interfaces';
-import {
-  HandleDefaultRole,
-  HandleFarewellChannel,
-  HandleAnnouncementType,
-  HandleTwitchNotifications,
-  HandleWelcomeChannel,
-  HandleTwitchChannel,
-} from '../Utils/Helpers/RowHandlers';
+import RowHandlers from '../Utils/Helpers/RowHandlers';
+import WelcomeSchema from '../Utils/Schemas/Welcome';
+import FarewellSchema from '../Utils/Schemas/Farewell';
+import GuildSchema from '../Utils/Schemas/Guild';
+import TwitchSchema from '../Utils/Schemas/Twitch';
 
 export const event: Event = {
   name: 'interactionCreate',
@@ -34,24 +31,26 @@ export const event: Event = {
     }
 
     if (interaction.isSelectMenu()) {
+      const RowHandler = new RowHandlers(interaction);
+
       switch (interaction.customId) {
         case 'WelcomeChannel':
-          await HandleWelcomeChannel(interaction);
+          await RowHandler.ChannelHandler('Welcome Channel', WelcomeSchema);
           break;
         case 'FarewellChannel':
-          await HandleFarewellChannel(interaction);
+          await RowHandler.ChannelHandler('Farewell Channel', FarewellSchema);
           break;
         case 'Role':
-          await HandleDefaultRole(interaction);
+          await RowHandler.CustomHandler('Default Role', GuildSchema, 'DefaultRoleID');
           break;
         case 'AnnouncementType':
-          await HandleAnnouncementType(interaction);
+          await RowHandler.CustomHandler('Announcement Type', GuildSchema, 'AnnouncementType');
           break;
         case 'TwitchNotifications':
-          await HandleTwitchNotifications(interaction);
+          await RowHandler.CustomHandler('Twitch Notifications', TwitchSchema, 'NotificationsEnabled');
           break;
         case 'TwitchChannel':
-          await HandleTwitchChannel(interaction);
+          await RowHandler.ChannelHandler('Twitch Channel', TwitchSchema);
           break;
         default:
           interaction.reply({ content: `Something went wrong!`, ephemeral: true });

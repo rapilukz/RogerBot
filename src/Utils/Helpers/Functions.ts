@@ -122,14 +122,20 @@ export const GuildPrefix = async (message: Message) => {
   return prefix;
 };
 
-export const GetChannelsByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, channelId: string): Promise<string> => {
+/**
+ * Returns the channel name given the channel ID
+ */
+export const GetChannelByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, channelId: string): Promise<string> => {
   const Channel = message.guild.channels.cache.find((channel) => channel.id === channelId);
   if (!Channel) return null;
 
   return Channel.name;
 };
 
-export const GetRolesByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, roleID: string): Promise<string> => {
+/**
+ * Returns the role name given the role id
+ */
+export const GetRoleByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, roleID: string): Promise<string> => {
   const Role = message.guild.roles.cache.find((role) => role.id === roleID);
   if (!Role) return null;
 

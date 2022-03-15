@@ -17,7 +17,6 @@ const GuildSchema = new Schema({
         enum: ['embed', 'text', 'banner'],
         default: 'banner',
     },
-    DefaultRoleName: String,
 })
 
 export default model('Guilds', GuildSchema);
