@@ -2,8 +2,12 @@ import { CacheType, MessageEmbed, SelectMenuInteraction } from 'discord.js';
 import { Model } from 'mongoose';
 import { SendoToDB } from './MongoFunctions';
 import { GetChannelByID, GetRoleByID } from './Functions';
+import WelcomeSchema from '../Schemas/Welcome';
+import FarewellSchema from '../Schemas/Farewell';
+import GuildSchema from '../Schemas/Guild';
+import TwitchSchema from '../Schemas/Twitch';
 
-class RowHandlers {
+class SelectMenuHandler {
   private interaction: SelectMenuInteraction<CacheType>;
 
   constructor(interaction: SelectMenuInteraction<CacheType>) {
@@ -19,10 +23,10 @@ class RowHandlers {
     });
   }
 
-  public async CustomHandler(HandlerName: string, Schema: Model<any>, DBField: string){
+  public async CustomHandler(HandlerName: string, Schema: Model<any>, DBField: string) {
     this.interaction.values.forEach(async (value) => {
       // Role ID needs a different logic but i don't want to create a new function for that because it's only used once
-      if(DBField === 'DefaultRoleID'){
+      if (DBField === 'DefaultRoleID') {
         const RoleName = await GetRoleByID(this.interaction, value);
         await SendoToDB(DBField, value, Schema, this.interaction.guildId);
         await this.SendEmbed(HandlerName, RoleName);
@@ -30,7 +34,6 @@ class RowHandlers {
 
       await SendoToDB(DBField, value, Schema, this.interaction.guildId);
       await this.SendEmbed(HandlerName, value);
-   
     });
   }
 
@@ -47,7 +50,7 @@ class RowHandlers {
     });
     return embed;
   }
-  
+
   private async SendEmbed(HandlerName: string, ObjectName: string) {
     const embed = await this.CreateEmbed(HandlerName, ObjectName);
     this.interaction.reply({
@@ -55,6 +58,31 @@ class RowHandlers {
       ephemeral: true,
     });
   }
+
+  public async ExecuteHandlers(customID: string) {
+    const Handlers = {
+      WelcomeChannel: async () => {
+        await this.ChannelHandler('Welcome Channel', WelcomeSchema);
+      },
+      FarewellChannel: async () => {
+        await this.ChannelHandler('Farewell Channel', FarewellSchema);
+      },
+      Role: async () => {
+        await this.CustomHandler('Default Role', GuildSchema, 'DefaultRoleID');
+      },
+      AnnouncementType: async () => {
+        await this.CustomHandler('Announcement Type', TwitchSchema, 'AnnouncementType');
+      },
+      TwitchChannel: async () => {
+        await this.CustomHandler('Twitch Channel', TwitchSchema, 'TwitchChannel');
+      },
+      TwitchNotification: async () => {
+        await this.CustomHandler('Twitch Notification', TwitchSchema, 'TwitchNotification');
+      },
+    };
+
+    await Handlers[customID]();
+  }
 }
 
-export default RowHandlers;
+export default SelectMenuHandler;

@@ -1,4 +1,3 @@
-import TwitchSchema from '../Schemas/Twitch';
 import { Model } from 'mongoose';
 
 /**
