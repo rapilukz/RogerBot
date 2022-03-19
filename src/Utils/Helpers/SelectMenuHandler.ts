@@ -25,22 +25,23 @@ class SelectMenuHandler {
 
   public async CustomHandler(HandlerName: string, Schema: Model<any>, DBField: string) {
     this.interaction.values.forEach(async (value) => {
+      let FieldValue: any;
       // Role ID needs a different logic but i don't want to create a new function for that because it's only used once
       if (DBField === 'DefaultRoleID') {
-        const RoleName = await GetRoleByID(this.interaction, value);
-        await SendoToDB(DBField, value, Schema, this.interaction.guildId);
-        await this.SendEmbed(HandlerName, RoleName);
+        FieldValue = await GetRoleByID(this.interaction, value);
+      }else{
+        FieldValue = value;
       }
 
       await SendoToDB(DBField, value, Schema, this.interaction.guildId);
-      await this.SendEmbed(HandlerName, value);
+      await this.SendEmbed(HandlerName, FieldValue);
     });
   }
 
-  private async CreateEmbed(HandlerName: string, ObjectName: string): Promise<MessageEmbed> {
+  private async CreateEmbed(HandlerName: string, FieldValue: string): Promise<MessageEmbed> {
     const embed = new MessageEmbed({
       title: `${HandlerName}`,
-      description: `${HandlerName} was set to \`${ObjectName == null ? 'None' : ObjectName}\``,
+      description: `${HandlerName} was set to \`${FieldValue == null ? 'None' : FieldValue}\``,
       color: 'GREEN',
       timestamp: new Date(),
       footer: {
@@ -51,8 +52,8 @@ class SelectMenuHandler {
     return embed;
   }
 
-  private async SendEmbed(HandlerName: string, ObjectName: string) {
-    const embed = await this.CreateEmbed(HandlerName, ObjectName);
+  private async SendEmbed(HandlerName: string, FieldValue: string) {
+    const embed = await this.CreateEmbed(HandlerName, FieldValue);
     this.interaction.reply({
       embeds: [embed],
       ephemeral: true,
