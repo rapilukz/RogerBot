@@ -11,6 +11,7 @@ export interface Command {
   category: string;
   cooldown: number;
   permissions?: PermissionResolvable[];
+  developer?: boolean;
   description: string;
   run: Run;
 }

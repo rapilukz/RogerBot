@@ -1,6 +1,7 @@
 import { Message, Collection } from 'discord.js';
 import { Event } from '../Interfaces';
 import NoCommand from '../Utils/Embeds/Command/NoCommand';
+import { CheckDev } from '../Utils/Helpers/MongoFunctions';
 import { GuildPrefix } from '../Utils/Helpers/Functions';
 
 export const event: Event = {
@@ -19,7 +20,8 @@ export const event: Event = {
 
     const command = client.commands.get(cmd) || client.aliases.get(cmd);
     if (!command) return NoCommand(client, message);
-    // Cooldown System
+    // Cooldown System~
+
     if (!client.cooldowns.has(command.name)) {
       client.cooldowns.set(command.name, new Collection());
     }
@@ -43,8 +45,11 @@ export const event: Event = {
     setTimeout(() => timeStamps.delete(message.author.id), cooldownAmount);
 
     if (command) {
-      if (!message.member.permissions.has(command.permissions))
+      const isDev: Boolean = await CheckDev(message.author.id);
+      //Check if the user has permissions to use the command && if the command is a developer command 
+      if (!message.member.permissions.has(command.permissions) || (command.developer && !isDev)) {
         return message.channel.send(`You do not have the required permissions to use this command.`);
+      }
 
       command.run(client, message, args);
     }

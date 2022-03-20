@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import DeveloperSchema from '../Schemas/Developer';
 
 /**
  * Sends the value to the desired field in the DB schema
@@ -17,6 +18,12 @@ export const SendoToDB = async (CollectionField: string, value: any, Schema: Mod
 
 export const CreateSchema = async (Schema: Model<any, any, any>, guildId: string, guildName: string) => {
   await Schema.create({ _id: guildId, Guild: guildName });
+};
+
+export const CheckDev = async (userdId: string): Promise<Boolean> => {
+  const dev = await DeveloperSchema.findOne({ _id: userdId });
+  if (dev) return true;
+  return false;
 };
 
 /**
@@ -46,3 +53,12 @@ export const GetFromDB = async (
     console.log(err);
   }
 };
+
+export const DBFields = {
+  ChannelID: 'ChannelID',
+  ChannelName: 'ChannelName',
+  DefaultRoleID: 'DefaultRoleID',
+  AnnouncementType: 'AnnouncementType',
+  NotificationsEnabled: 'NotificationsEnabled',
+  TwitchChannels: 'TwitchChannels',
+}
