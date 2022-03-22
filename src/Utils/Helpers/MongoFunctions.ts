@@ -5,8 +5,8 @@ import DeveloperSchema from '../Schemas/Developer';
  * Sends the value to the desired field in the DB schema
  * @param {CollectionField} CollectionField - Field you want to send the value to
  * @param {any} Value - Value you want to send to the field
- * @param {string} guildId - the guild id
  * @param {Schema} Schema - the mongoose schema
+ * @param {string} guildId - the guild id
  */
 export const SendoToDB = async (CollectionField: string, value: any, Schema: Model<any>, guildId: string) => {
   try {

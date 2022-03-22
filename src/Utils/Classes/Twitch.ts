@@ -1,7 +1,7 @@
 import { Client, CommandInteraction, Guild, MessageEmbed } from 'discord.js';
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { DBFields } from '../JSON/DBFields.json';
+import { DBFields } from '../Helpers/MongoFunctions';
 import TwitchSchema from '../Schemas/Twitch';
 import { GetFromDB } from '../Helpers/MongoFunctions';
 import { StreamData, TwitchChannel, StreamStatus, UserData } from '../../Interfaces/Random';
@@ -78,7 +78,7 @@ class Twitch {
   }
 
   public async CheckNotifications(guildId: string, guildName: string): Promise<boolean> {
-    const Field = DBFields.TwitchSchema.NotificationsEnabled;
+    const Field = DBFields.NotificationsEnabled;
     const HasTwitch = await GetFromDB(Field, TwitchSchema, guildId, guildName);
 
     if (!HasTwitch) return false;
@@ -116,7 +116,7 @@ class Twitch {
   }
 
   public async GetChannelsList(guildId: string, guildName: string): Promise<TwitchChannel[]> {
-    const field = DBFields.TwitchSchema.TwitchChannels;
+    const field = DBFields.TwitchChannels;
 
     const TwitchChannels: TwitchChannel[] = await GetFromDB(field, TwitchSchema, guildId, guildName);
 
@@ -144,7 +144,7 @@ class Twitch {
       return;
     });
 
-    const Field = DBFields.TwitchSchema.ChannelID;
+    const Field = DBFields.ChannelID;
     const ChannelID = await GetFromDB(Field, TwitchSchema, guildId, guildName); // Get notifications channel ID from DB
     const Channel = this.Client.channels.cache.get(ChannelID) as any;
 

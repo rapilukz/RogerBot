@@ -90,7 +90,7 @@ class ExtendedClient extends Client {
     try {
       console.log('Started refreshing application (/) commands.');
 
-      await rest.put(Routes.applicationGuildCommands(process.env.BOT_ID, GuildID), { body: this.SlashCommandsArray });
+      await rest.put(Routes.applicationCommands(process.env.BOT_ID), { body: this.SlashCommandsArray });
 
       console.log('Successfully reloaded application (/) commands.');
     } catch (err) {

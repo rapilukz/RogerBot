@@ -2,8 +2,8 @@ import { SlashCommand } from '../../Interfaces';
 import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { ADMINISTRATOR } from '../../Utils/Helpers/Permissions';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
-import { Emojis } from '../../Utils/JSON/Emojis.json';
-import Twitch from '../../Utils/APIs/Twitch';
+import { Emojis } from '../../Utils/Helpers/Emojis';
+import Twitch from '../../Utils/Classes/Twitch';
 import { TwitchChannel, UserData } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {
@@ -88,7 +88,7 @@ export const command: SlashCommand = {
       },
       url: URL,
     });
-
+    
     const TwitchBaseIcon = interaction.client.emojis.cache.get(Emojis.TwitchBase);
     interaction.reply({
       content: `${TwitchBaseIcon} ${URL}`,

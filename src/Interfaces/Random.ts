@@ -5,6 +5,8 @@ export enum TypesOfMessage {
 }
 export type BotMessageType = `${TypesOfMessage}`;
 
+export type ChannelType = 'GUILD_TEXT' | 'GUILD_VOICE' | 'GUILD_CATEGORY' | 'GUILD_NEWS' | 'GUILD_STORE';
+
 export interface TwitchChannel {
   _id: string;
   status: StreamStatus;

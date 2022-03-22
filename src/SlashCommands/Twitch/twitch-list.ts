@@ -2,8 +2,8 @@ import { SlashCommand } from '../../Interfaces';
 import { bold, SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SEND_MESSAGES } from '../../Utils/Helpers/Permissions';
-import Twitch from '../../Utils/APIs/Twitch';
-import { Emojis } from '../../Utils/JSON/Emojis.json';
+import Twitch from '../../Utils/Classes/Twitch';
+import { Emojis } from '../../Utils/Helpers/Emojis';
 import { TwitchChannel } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {

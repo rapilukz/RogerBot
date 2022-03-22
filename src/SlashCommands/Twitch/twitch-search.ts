@@ -2,7 +2,7 @@ import { SlashCommand } from '../../Interfaces';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SEND_MESSAGES } from '../../Utils/Helpers/Permissions';
-import Twitch from '../../Utils/APIs/Twitch';
+import Twitch from '../../Utils/Classes/Twitch';
 import { UserData } from '../../Interfaces/Random';
 
 export const command: SlashCommand = {

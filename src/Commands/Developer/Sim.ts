@@ -7,10 +7,9 @@ export const command: Command = {
   permissions: [],
   category: 'Developer',
   developer: true,
-  description: '',
+  description: 'Used for testing code',
   run: async (client, message, args) => {
      /* client.emit('guildMemberAdd', message.member);  */   
-    
-    
+  
   },
 };

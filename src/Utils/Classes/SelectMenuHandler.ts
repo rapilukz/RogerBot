@@ -1,12 +1,15 @@
 import { CacheType, MessageEmbed, SelectMenuInteraction } from 'discord.js';
 import { Model } from 'mongoose';
-import { SendoToDB } from './MongoFunctions';
-import { GetChannelByID, GetRoleByID } from './Functions';
+import { SendoToDB } from '../Helpers/MongoFunctions';
+import { GetChannelByID, GetRoleByID } from '../Helpers/Functions';
 import WelcomeSchema from '../Schemas/Welcome';
 import FarewellSchema from '../Schemas/Farewell';
 import GuildSchema from '../Schemas/Guild';
 import TwitchSchema from '../Schemas/Twitch';
+import { DBFields } from '../Helpers/MongoFunctions';
 
+
+// This class is used to the value selected by the user in the select menu
 class SelectMenuHandler {
   private interaction: SelectMenuInteraction<CacheType>;
 
@@ -14,22 +17,22 @@ class SelectMenuHandler {
     this.interaction = interaction;
   }
 
-  public async ChannelHandler(HandlerName: string, Schema: Model<any>) {
+  private async ChannelHandler(HandlerName: string, Schema: Model<any>) {
     this.interaction.values.forEach(async (value) => {
       const ChannelName = await GetChannelByID(this.interaction, value);
-      await SendoToDB('ChannelID', value, Schema, this.interaction.guildId);
+      await SendoToDB(DBFields.ChannelID, value, Schema, this.interaction.guildId); // Update the DB with the new channel
 
       await this.SendEmbed(HandlerName, ChannelName);
     });
   }
 
-  public async CustomHandler(HandlerName: string, Schema: Model<any>, DBField: string) {
+  private async CustomHandler(HandlerName: string, Schema: Model<any>, DBField: keyof typeof DBFields) {
     this.interaction.values.forEach(async (value) => {
       let FieldValue: any;
       // Role ID needs a different logic but i don't want to create a new function for that because it's only used once
-      if (DBField === 'DefaultRoleID') {
+      if (DBField === DBFields.DefaultRoleID) {
         FieldValue = await GetRoleByID(this.interaction, value);
-      }else{
+      } else {
         FieldValue = value;
       }
 
@@ -72,17 +75,25 @@ class SelectMenuHandler {
         await this.CustomHandler('Default Role', GuildSchema, 'DefaultRoleID');
       },
       AnnouncementType: async () => {
-        await this.CustomHandler('Announcement Type', TwitchSchema, 'AnnouncementType');
+        await this.CustomHandler('Announcement Type', GuildSchema, 'AnnouncementType');
       },
       TwitchChannel: async () => {
-        await this.CustomHandler('Twitch Channel', TwitchSchema, 'TwitchChannel');
+        await this.ChannelHandler('Twitch Channel', TwitchSchema);
       },
-      TwitchNotification: async () => {
-        await this.CustomHandler('Twitch Notification', TwitchSchema, 'TwitchNotification');
+      TwitchNotifications: async () => {
+        await this.CustomHandler('Twitch Notification', TwitchSchema, 'NotificationsEnabled');
+      },
+      Default: async () => {
+        this.interaction.reply({ content: `This menu is not implemented.`, ephemeral: true });
       },
     };
 
-    await Handlers[customID]();
+
+    if (Handlers[customID]) {
+      await Handlers[customID]();
+    } else {
+      await Handlers.Default(); //If the value is not found, it will default to this
+    }
   }
 }
 

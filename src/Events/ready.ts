@@ -1,7 +1,7 @@
 import { Client } from 'discord.js';
 import { Event } from '../Interfaces';
 import ConfigJson from '../config.json';
-import Twitch from '../Utils/APIs/Twitch';
+import Twitch from '../Utils/Classes/Twitch';
 import { EnableTwitch } from '../config.json';
 
 export const event: Event = {

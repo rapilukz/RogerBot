@@ -16,6 +16,7 @@ import { prefix as GlobalPrefix } from '../../config.json';
 import Canvas from 'canvas';
 import path from 'path';
 import { CreateSchema } from './MongoFunctions';
+import { ChannelType } from '../../Interfaces/Random';
 
 export const isNumber = (input: any): boolean => {
   return !isNaN(input);
@@ -51,7 +52,7 @@ export const roast = async (user: User, client: Client, message: Message) => {
 
 export const GetChannels = async (
   message: Message | CommandInteraction | SelectMenuInteraction<CacheType>,
-  Type: 'GUILD_TEXT' | 'GUILD_VOICE' | 'GUILD_CATEGORY' | 'GUILD_NEWS' | 'GUILD_STORE'
+  Type: ChannelType
 ): Promise<MessageSelectOptionData[]> => {
   const Channels = await message.guild.channels.fetch();
   const TextChannels: MessageSelectOptionData[] = Channels.filter((channel) => channel.type == Type).map((channel) => {
@@ -125,7 +126,10 @@ export const GuildPrefix = async (message: Message) => {
 /**
  * Returns the channel name given the channel ID
  */
-export const GetChannelByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, channelId: string): Promise<string> => {
+export const GetChannelByID = async (
+  message: Message | CommandInteraction | SelectMenuInteraction<CacheType>,
+  channelId: string
+): Promise<string> => {
   const Channel = message.guild.channels.cache.find((channel) => channel.id === channelId);
   if (!Channel) return null;
 
@@ -135,7 +139,10 @@ export const GetChannelByID = async (message: Message | CommandInteraction | Sel
 /**
  * Returns the role name given the role id
  */
-export const GetRoleByID = async (message: Message | CommandInteraction | SelectMenuInteraction<CacheType>, roleID: string): Promise<string> => {
+export const GetRoleByID = async (
+  message: Message | CommandInteraction | SelectMenuInteraction<CacheType>,
+  roleID: string
+): Promise<string> => {
   const Role = message.guild.roles.cache.find((role) => role.id === roleID);
   if (!Role) return null;
 

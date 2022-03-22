@@ -1,6 +1,6 @@
 import { CommandInteraction } from 'discord.js';
 import { Event } from '../Interfaces';
-import SelectMenuHandler from '../Utils/Helpers/SelectMenuHandler';
+import SelectMenuHandler from '../Utils/Classes/SelectMenuHandler';
 
 export const event: Event = {
   name: 'interactionCreate',
